@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signal Generator — Blackout Quotex</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { background: linear-gradient(to bottom, #111827, #1f2937); color: white; }
+  .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(6px); border-radius: 1rem; padding: 2rem; }
+  .btn-animate { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .btn-animate:hover { transform: translateY(-2px) scale(1.02); box-shadow:0 8px 20px rgba(79,70,229,0.4); }
+</style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-6">
+
+<section id="signalSection" class="glass w-full max-w-lg flex flex-col items-center space-y-6">
+  <h1 class="text-3xl font-bold">Signal Generator</h1>
+  <p id="licenseStatus" class="text-yellow-400 font-semibold"></p>
+  
+  <div class="flex gap-4">
+    <button onclick="generateSignal('BUY')" class="btn-animate px-6 py-3 bg-green-600 rounded-lg hover:bg-green-500 font-semibold">BUY</button>
+    <button onclick="generateSignal('SELL')" class="btn-animate px-6 py-3 bg-red-600 rounded-lg hover:bg-red-500 font-semibold">SELL</button>
+  </div>
+
+  <p id="lastSignal" class="text-xl text-indigo-400 font-semibold"></p>
+  <button onclick="goBack()" class="mt-4 px-6 py-3 bg-indigo-600 rounded-lg hover:bg-indigo-500">Back to Dashboard</button>
+</section>
+
+<script>
+const correctLicense='10258';
+
+function checkLicense(){
+  const licenseDate=localStorage.getItem('licenseActivated');
+  if(!licenseDate){
+    alert('License not found! Please login first.');
+    window.location.href='login.html';
+    return false;
+  }
+  const now=new Date();
+  const activateDate=new Date(licenseDate);
+  const diffDays=Math.floor((now-activateDate)/(1000*60*60*24));
+  if(diffDays>=30){
+    alert('License expired! Please renew.');
+    window.location.href='login.html';
+    return false;
+  }
+  document.getElementById('licenseStatus').textContent='🕒 লাইসেন্স valid — '+(30-diffDays)+' days left';
+}
+
+function generateSignal(type){
+  const timestamp=new Date().toLocaleTimeString();
+  document.getElementById('lastSignal').textContent=`${type} Signal Generated at ${timestamp}`;
+}
+
+function goBack(){ window.location.href='dashboard.html'; }
+
+// check license on load
+checkLicense();
+</script>
+</body>
+</html>
