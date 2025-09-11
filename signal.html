@@ -92,20 +92,19 @@ input, select {
   font-weight:bold; 
 }
 
-/* License Countdown (small, inline) */
+/* License Countdown (under header) */
 #licenseCountdown { 
   display:block; 
-  margin-top:0.35rem; 
-  font-size:0.85rem; 
+  margin-top:0.5rem; 
+  font-size:0.95rem; 
   font-weight:bold; 
   color:#34d399; 
   font-family:sans-serif; 
 }
-#licenseCountdown.expiring { color:#f87171; } /* optional red when close to expiry */
 
 /* Header Text */
 header h1 { font-size:2.5rem; font-weight:900; }
-header p { font-size:0.875rem; color:#9ca3af; }
+header p { font-size:0.875rem; color:#9ca3af; margin-top:0.25rem; }
 </style>
 </head>
 <body>
@@ -114,6 +113,8 @@ header p { font-size:0.875rem; color:#9ca3af; }
 
 <header class="text-center">
 <h1>🖤 Blackout Signal</h1>
+<!-- License countdown displayed under header -->
+<span id="licenseCountdown">🕒 License Active</span>
 <p>Software: Blackout Signal | Owner: @TraderParvej</p>
 </header>
 
@@ -155,8 +156,6 @@ header p { font-size:0.875rem; color:#9ca3af; }
 <div>
 <label>Signal Count</label>
 <input type="number" id="signalCount" value="1" min="1"/>
-<!-- License Countdown moved here -->
-<span id="licenseCountdown">🕒 License Remaining: --</span>
 </div>
 
 <div>
