@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Blackout Quotex Signal — Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .glass {
+      background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      backdrop-filter: blur(6px);
+      animation: fadeIn 1.2s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .btn-animate {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .btn-animate:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 8px 20px rgba(79,70,229,0.4);
+    }
+    .fade-in-up {
+      opacity: 0;
+      animation: fadeUp 1s ease forwards;
+      animation-delay: 0.3s;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black flex items-center justify-center p-6">
+  <main class="w-full max-w-md fade-in-up">
+    <section class="glass rounded-2xl shadow-2xl p-8 border border-gray-800">
+      <header class="mb-6 text-center">
+        <h1 class="text-3xl font-extrabold text-white tracking-tight">Blackout Quotex Signal</h1>
+        <p class="text-sm text-gray-400 mt-2">High Accuracy Advance Signal</p>
+      </header>
+
+      <form id="loginForm" class="space-y-5" onsubmit="return handleLogin(event)">
+        <div>
+          <label for="username" class="block text-sm font-medium text-gray-300">Username</label>
+          <input id="username" name="username" type="text" value="Blackoutpro" autocomplete="username"
+                 class="mt-1 w-full rounded-lg bg-gray-900 border border-gray-700 text-gray-100 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-transform duration-200 focus:scale-[1.02]" />
+        </div>
+
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-300">Password</label>
+          <div class="relative mt-1">
+            <input id="password" name="password" type="password" value="12580" autocomplete="current-password"
+                   class="w-full rounded-lg bg-gray-900 border border-gray-700 text-gray-100 px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-transform duration-200 focus:scale-[1.02]" />
+            <button type="button" id="togglePwd" aria-label="Toggle password" class="absolute inset-y-0 right-0 px-3 py-2 text-gray-300 hover:scale-110 transition-transform">Show</button>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between text-sm text-gray-300">
+          <label class="flex items-center gap-2">
+            <input id="remember" type="checkbox" class="h-4 w-4 rounded bg-gray-800 border-gray-600" />
+            Remember me
+          </label>
+          <a href="#" class="text-indigo-400 hover:underline">Forgot?</a>
+        </div>
+
+        <div>
+          <button type="submit" class="btn-animate w-full py-3 rounded-lg bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-semibold shadow-md">Sign in</button>
+        </div>
+
+        <p id="message" class="text-center text-sm mt-2 text-gray-400"></p>
+      </form>
+
+      <div class="flex justify-center mb-3 mt-4 animate-bounce">
+        <a href="https://t.me/+ZUtf8GenYKUwYjg1" target="_blank" rel="noopener" aria-label="Telegram Support" class="inline-flex items-center gap-2 text-indigo-400 hover:opacity-90">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="20" height="20" fill="currentColor" aria-hidden="true">
+            <path d="M120 0C53.7 0 0 53.7 0 120s53.7 120 120 120 120-53.7 120-120S186.3 0 120 0zm56.6 81.9l-19.8 92.5c-1.5 6.9-5.5 8.6-11.1 5.4l-30.7-22.6-14.8 14.2c-1.6 1.6-2.9 2.9-5.9 2.9l2.1-30.1 54.8-49.6c2.4-2.1-.5-3.3-3.7-1.2l-67.8 42.6-29.2-9.1c-6.3-1.9-6.4-6.3 1.3-9.3l113.9-43.8c5.2-1.9 9.7 1.2 8 8.1z"/>
+          </svg>
+          <span class="text-sm">Telegram Support</span>
+        </a>
+      </div>
+      <footer class="mt-6 text-xs text-gray-500 text-center">
+        © <span id="year"></span> Blackout Quotex Signal — Secure Login Portal
+      </footer>
+    </section>
+  </main>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    const pwd = document.getElementById('password');
+    const toggle = document.getElementById('togglePwd');
+    toggle.addEventListener('click', () => {
+      if (pwd.type === 'password') {
+        pwd.type = 'text';
+        toggle.textContent = 'Hide';
+      } else {
+        pwd.type = 'password';
+        toggle.textContent = 'Show';
+      }
+    });
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const u = document.getElementById('username').value.trim();
+      const p = document.getElementById('password').value.trim();
+      const message = document.getElementById('message');
+
+      const correctUser = 'Blackoutpro';
+      const correctPass = '12580';
+
+      if (!u || !p) {
+        message.textContent = 'Please enter username and password.';
+        message.style.color = '#fca5a5';
+        return false;
+      }
+
+      if (u === correctUser && p === correctPass) {
+        message.textContent = 'Login successful — welcome!';
+        message.style.color = '#86efac';
+        setTimeout(() => {
+          window.location.href = '#dashboard';
+        }, 700);
+      } else {
+        message.textContent = 'Username or password is incorrect.';
+        message.style.color = '#fca5a5';
+      }
+
+      return false;
+    }
+  </script>
+</body>
+</html>
