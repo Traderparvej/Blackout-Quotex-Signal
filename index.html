@@ -102,7 +102,9 @@ document.getElementById('year').textContent=new Date().getFullYear();
 
 const pwd=document.getElementById('password');
 const toggle=document.getElementById('togglePwd');
-toggle.addEventListener('click',()=>{ pwd.type==='password'? (pwd.type='text', toggle.textContent='Hide') : (pwd.type='password', toggle.textContent='Show'); });
+toggle.addEventListener('click',()=>{ 
+  pwd.type==='password'? (pwd.type='text', toggle.textContent='Hide') : (pwd.type='password', toggle.textContent='Show'); 
+});
 
 const correctUser='Blackoutpro';
 const correctPass='12580';
@@ -129,8 +131,8 @@ function handleLogin(e){
         message.style.color='#86efac';
         licenseInfo.textContent='🕒 লাইসেন্স চলমান';
         startCountdown(activateDate);
-        // Redirect to dashboard after 1 sec
-        setTimeout(()=>{ window.location.href='#dashboard'; },1000);
+        // ✅ Redirect to signal.html
+        setTimeout(()=>{ window.location.href='signal.html'; },1000);
         return false;
       } else { localStorage.removeItem('licenseActivated'); openModal(); }
     } else { openModal(); }
@@ -156,7 +158,8 @@ function checkLicense(){
     message.style.color='#86efac';
     licenseInfo.textContent='🕒 লাইসেন্স চলমান';
     startCountdown(now);
-    setTimeout(()=>{ window.location.href='#dashboard'; },1000);
+    // ✅ Redirect to signal.html
+    setTimeout(()=>{ window.location.href='signal.html'; },1000);
   } else { msg.textContent='Invalid license key.'; msg.classList.remove('hidden'); }
 }
 
