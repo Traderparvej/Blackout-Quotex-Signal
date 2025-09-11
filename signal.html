@@ -19,6 +19,9 @@ input, select { background-color:#1f2937; color:white; border:1px solid #374151;
 .license-bar { text-align:center; font-weight:bold; margin-bottom:0.5rem; }
 .license-active { color:#86efac; }
 .license-expired { color:#f87171; }
+@media (min-width:768px){
+  .asset-container { max-height:200px; }
+}
 </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-6">
@@ -100,6 +103,7 @@ input, select { background-color:#1f2937; color:white; border:1px solid #374151;
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
 
+// Asset options
 const assetOptions = {
 "OTC": ["AUD/USD-OTC", "NZD/USD-OTC", "EUR/USD-OTC", "EUR/CAD-OTC", "USD/BRL-OTC", "USD/PKR-OTC"],
 "Real": ["BTC/USDT", "ETH/USDT", "XRP/USDT", "BNB/USDT", "ADA/USDT"]
@@ -123,13 +127,13 @@ function getSelectedAssets(){
   return Array.from(document.querySelectorAll('#assetContainer input[type=checkbox]:checked')).map(cb=>cb.value);
 }
 
-// Bold monospace
+// Bold monospace unicode
 const boldDigits = {'0':'𝟶','1':'𝟷','2':'𝟸','3':'𝟹','4':'𝟺','5':'𝟻','6':'𝟼','7':'𝟽','8':'𝟾','9':'𝟿'};
 const boldLetters = {'A':'𝙰','B':'𝙱','C':'𝙲','D':'𝙳','E':'𝙴','F':'𝙵','G':'𝙶','H':'𝙷','I':'𝙸','J':'𝙹','K':'𝙺','L':'𝙻','M':'𝙼','N':'𝙽','O':'𝙾','P':'𝙿','Q':'𝟀','R':'𝚁','S':'𝚂','T':'𝚃','U':'𝚄','V':'𝚅','W':'𝚆','X':'𝚇','Y':'𝚈','Z':'𝚉','/':'/','-':'-'};
 function unicodeTime(hh, mm){ return `${hh.split('').map(d=>boldDigits[d]).join('')}:${mm.split('').map(d=>boldDigits[d]).join('')}`; }
 function unicodeAsset(asset){ return asset.toUpperCase().split('').map(c=>boldLetters[c]||c).join(''); }
 
-// License countdown using same date as login
+// License countdown
 const licenseDurationDays = 30;
 function updateLicenseBar(){
   const bar = document.getElementById('licenseBar');
@@ -141,7 +145,10 @@ function updateLicenseBar(){
     if(diff<licenseDurationDays){
         const expireDate = new Date(activateDate);
         expireDate.setDate(expireDate.getDate()+licenseDurationDays);
-        bar.innerHTML = `🕒 লাইসেন্স চলমান 🕒 <br> Expires: ${expireDate.toLocaleDateString()} ${expireDate.toLocaleTimeString()}`;
+        const hh = expireDate.getHours().toString().padStart(2,'0');
+        const mm = expireDate.getMinutes().toString().padStart(2,'0');
+        const ss = expireDate.getSeconds().toString().padStart(2,'0');
+        bar.innerHTML = `🕒 লাইসেন্স চলমান 🕒 <br>Expires: ${expireDate.toLocaleDateString()} ${hh}:${mm}:${ss}`;
         bar.className='license-bar license-active';
     } else {
         bar.innerHTML = `🕒 লাইসেন্স শেষ হয়েছে 🕒`;
@@ -154,7 +161,7 @@ function updateLicenseBar(){
   }
 }
 updateLicenseBar();
-setInterval(updateLicenseBar,1000*60); // update every 1 min
+setInterval(updateLicenseBar,1000); // update every 1 sec
 
 function generateSignals(){
   const selectedAssets = getSelectedAssets();
@@ -173,7 +180,7 @@ function generateSignals(){
     const hh = currentTime.getHours().toString().padStart(2,'0');
     const mm = currentTime.getMinutes().toString().padStart(2,'0');
     output += `𝙼𝟷 ${unicodeTime(hh, mm)} ${unicodeAsset(asset)}\n`;
-    currentTime.setMinutes(currentTime.getMinutes()+Math.floor(Math.random()*4)+3); // 3-6 min random
+    currentTime.setMinutes(currentTime.getMinutes()+Math.floor(Math.random()*4)+3); // random 3-6 min
   }
 
   output += `\nSoftware:Blackout\nOwner: @TraderParvej`;
