@@ -7,7 +7,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
 body { background: linear-gradient(to bottom,#111827,#1f2937); color:white; font-family:'Inter',sans-serif; }
-.glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(6px); border-radius:1.25rem; padding:2rem; box-shadow:0 10px 25px rgba(0,0,0,0.5); }
+.glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(6px); border-radius:1.25rem; padding:2rem; box-shadow:0 10px 25px rgba(0,0,0,0.5);}
 .btn-animate { transition: transform 0.2s ease, box-shadow 0.2s ease; }
 .btn-animate:hover { transform: translateY(-2px) scale(1.02); box-shadow:0 8px 20px rgba(79,70,229,0.4); }
 input, select { background-color:#1f2937; color:white; border:1px solid #374151; border-radius:0.5rem; padding:0.5rem; width:100%; }
@@ -174,7 +174,7 @@ function generateSignals(){
     const hh = currentTime.getHours().toString().padStart(2,'0');
     const mm = currentTime.getMinutes().toString().padStart(2,'0');
     output += `𝙼𝟷 ${unicodeTime(hh, mm)} ${unicodeAsset(asset)}\n`;
-    const gap = Math.floor(Math.random()*4)+3; 
+    const gap = Math.floor(Math.random()*4)+3; // 3-6 minutes gap
     currentTime.setMinutes(currentTime.getMinutes()+gap);
   }
 
