@@ -16,9 +16,14 @@ input, select { background-color:#1f2937; color:white; border:1px solid #374151;
 .asset-container label:hover { background-color:#2563eb; color:white; }
 .asset-container input[type=checkbox] { accent-color:#6366f1; width:18px; height:18px; }
 .signal-output { background:#111827; border:1px solid #374151; border-radius:0.5rem; padding:1rem; min-height:220px; color:#60a5fa; white-space:pre-wrap; overflow-y:auto; font-family:monospace; font-weight:bold; }
+/* License countdown style */
+#licenseCountdown { position:fixed; top:1rem; left:1rem; background:rgba(31,41,55,0.8); padding:0.5rem 1rem; border-radius:0.5rem; font-weight:bold; color:#34d399; z-index:50; font-family:sans-serif; }
 </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-6">
+
+<!-- License Countdown -->
+<div id="licenseCountdown">🕒 License Remaining: --</div>
 
 <section class="glass w-full max-w-3xl space-y-6">
 
@@ -162,6 +167,33 @@ function resetSignal(){
 function copySignal(){
   navigator.clipboard.writeText(document.getElementById('signalOutput').textContent).then(()=>alert('Signal copied!'));
 }
+
+/* License countdown logic */
+let countdownInterval;
+function startLicenseCountdown(){
+  const countdownEl = document.getElementById('licenseCountdown');
+  const storedDate = localStorage.getItem('licenseActivated');
+  if(!storedDate){ countdownEl.textContent = '🕒 License Expired!'; return; }
+
+  const startDate = new Date(storedDate);
+  if(countdownInterval) clearInterval(countdownInterval);
+
+  countdownInterval = setInterval(()=>{
+    const now = new Date();
+    const endDate = new Date(startDate);
+    endDate.setDate(endDate.getDate()+30);
+    const diff = endDate-now;
+    if(diff<=0){ clearInterval(countdownInterval); countdownEl.textContent = '🕒 License Expired!'; return; }
+    const days=Math.floor(diff/(1000*60*60*24));
+    const hours=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+    const minutes=Math.floor((diff%(1000*60*60))/(1000*60));
+    const seconds=Math.floor((diff%(1000*60))/1000);
+    countdownEl.textContent=`🕒 License Remaining: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+  },1000);
+}
+
+// Start countdown on page load
+startLicenseCountdown();
 </script>
 </body>
 </html>
