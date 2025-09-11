@@ -1,131 +1,93 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Signal Page</title>
-  <style>
-    body {
-      font-family: "Segoe UI", sans-serif;
-      background: #0d0d0d;
-      color: #fff;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-    }
-    h1 {
-      margin-top: 20px;
-      font-size: 28px;
-    }
-    .license-box {
-      margin: 15px auto;
-      background: #1c1c1c;
-      display: inline-block;
-      padding: 12px 20px;
-      border-radius: 10px;
-      border: 1px solid #444;
-    }
-    .signal-container {
-      margin-top: 30px;
-      padding: 0 15px;
-    }
-    .signal-output {
-      white-space: pre-line;
-      background: #1c1c1c;
-      border: 1px solid #333;
-      border-radius: 8px;
-      padding: 20px;
-      font-size: 18px;
-      line-height: 1.6;
-      text-align: left;
-      max-width: 600px;
-      margin: 0 auto;
-      font-family: 'Segoe UI', sans-serif;
-    }
-    button {
-      background: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 10px 20px;
-      font-size: 16px;
-      margin-top: 20px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #0056b3;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blackout Quotex Signal</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { background: linear-gradient(to bottom,#0f172a,#1e293b,#000); color:#f8fafc; font-family:sans-serif; }
+  .glass { background:rgba(255,255,255,0.05); backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,0.1); }
+  .fade-in { animation:fadeIn 1s ease-out; }
+  @keyframes fadeIn{from{opacity:0;transform:translateY(15px);}to{opacity:1;transform:translateY(0);}}
+</style>
 </head>
-<body>
+<body class="min-h-screen flex items-center justify-center p-6">
 
-  <h1>(◉‿◉) Blackout (◉‿◉)</h1>
+<main class="w-full max-w-2xl glass rounded-2xl shadow-2xl p-8 fade-in">
 
-  <div class="license-box">
-    <div>🕒 লাইসেন্স চলমান 🕒</div>
-    <div id="licenseExpire">Expires: --/--/---- --:--:--</div>
+  <!-- License Status -->
+  <div class="text-center mb-6">
+    <p id="licenseStatus" class="text-yellow-300 text-sm font-medium">🕒 লাইসেন্স চলমান 🕒</p>
+    <p id="licenseCountdown" class="text-green-400 text-sm font-semibold mt-1"></p>
   </div>
 
-  <div class="signal-container">
-    <div class="signal-output" id="signalOutput">
-      এখানে সিগন্যাল আসবে...
-    </div>
-    <button onclick="generateSignals()">🔁 Generate Signals</button>
-  </div>
+  <!-- Signal Header -->
+  <header class="text-center mb-8">
+    <h1 class="text-3xl font-extrabold tracking-tight">📡 Blackout Signal Panel</h1>
+    <p class="text-gray-400 text-sm mt-2">High Accuracy Advanced Signals</p>
+  </header>
 
-  <script>
-    // ----- License Expiry Countdown (SAME AS LOGIN PAGE) -----
-    const licenseExpiry = localStorage.getItem("licenseExpiry");
-    if (licenseExpiry) {
-      const expiryTime = new Date(licenseExpiry).getTime();
+  <!-- Signal Output -->
+  <section class="space-y-4">
+    <pre id="output" class="whitespace-pre-wrap text-sm leading-relaxed bg-black/30 rounded-lg p-4 border border-gray-700"></pre>
+  </section>
 
-      function updateLicenseCountdown() {
-        const now = new Date().getTime();
-        const distance = expiryTime - now;
+  <footer class="mt-8 text-center text-xs text-gray-500">
+    © <span id="year"></span> Blackout Quotex Signal — Professional Panel
+  </footer>
 
-        if (distance <= 0) {
-          document.getElementById("licenseExpire").textContent = "License Expired";
-          return;
-        }
+</main>
 
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
 
-        const expiryDate = new Date(expiryTime);
-        const formatted = expiryDate.toLocaleDateString('en-GB') + " " + expiryDate.toLocaleTimeString('en-GB');
+// ---- License countdown sync from localStorage ----
+let countdownInterval;
+function startLicenseCountdown(startDate){
+  const countdownEl=document.getElementById('licenseCountdown');
+  if(countdownInterval) clearInterval(countdownInterval);
 
-        document.getElementById("licenseExpire").textContent =
-          `Expires: ${formatted} (${days}d ${hours}h ${minutes}m ${seconds}s)`;
-      }
-
-      setInterval(updateLicenseCountdown, 1000);
-      updateLicenseCountdown();
+  countdownInterval=setInterval(()=>{
+    const now=new Date();
+    const endDate=new Date(startDate); endDate.setDate(endDate.getDate()+30);
+    const diff=endDate-now;
+    if(diff<=0){
+      clearInterval(countdownInterval);
+      countdownEl.textContent='🕒 লাইসেন্স মেয়াদ শেষ!';
+      return;
     }
+    const d=Math.floor(diff/(1000*60*60*24));
+    const h=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+    const m=Math.floor((diff%(1000*60*60))/(1000*60));
+    const s=Math.floor((diff%(1000*60))/1000);
+    countdownEl.textContent=`Expires: ${endDate.toLocaleDateString()} ${endDate.toLocaleTimeString()} — বাকি: ${d}d ${h}h ${m}m ${s}s`;
+  },1000);
+}
 
-    // ----- Signal Generator -----
-    function generateSignals() {
-      const pairs = ["NZDUSD-OTC","EURCAD-OTC","USDJPY-OTC","GBPUSD-OTC","AUDUSD-OTC","USDCHF-OTC","USDBRL-OTC","USDPKR-OTC"];
-      const count = 5;
-      const now = new Date();
-      let output = `DATE: ${now.getDate().toString().padStart(2,'0')}.${(now.getMonth()+1).toString().padStart(2,'0')}.${now.getFullYear()}\n\n` +
-                   `⏰ UTC +6:00 ;  MTG :- 1 STEP\n\n` +
-                   `       (◉‿◉) Blackout (◉‿◉)\n\n` +
-                   `⌛️ 1 minutes :- \n\n`;
+const storedDate=localStorage.getItem('licenseActivated');
+if(storedDate){
+  startLicenseCountdown(new Date(storedDate));
+}else{
+  document.getElementById('licenseStatus').textContent='⚠️ লাইসেন্স পাওয়া যায়নি ⚠️';
+  document.getElementById('licenseCountdown').textContent='অনুগ্রহ করে লগইন করুন।';
+}
 
-      let currentTime = new Date();
-      for (let i = 0; i < count; i++) {
-        const hour = currentTime.getHours().toString().padStart(2, '0');
-        const minute = currentTime.getMinutes().toString().padStart(2, '0');
-        const pair = pairs[Math.floor(Math.random() * pairs.length)];
-        output += `𝙼𝟷 ${hour}:${minute} ${pair.replace(/([A-Z]{3})([A-Z]{3})/, '$1/$2')}\n`;
-        currentTime.setMinutes(currentTime.getMinutes() + Math.floor(Math.random() * 4) + 3);
-      }
-
-      output += `\nSoftware: Blackout\nOwner: @TraderParvej`;
-      document.getElementById("signalOutput").textContent = output;
-    }
-  </script>
+// ---- Demo signals (আপনার backend logic এখানে বসবে) ----
+function generateSignals(){
+  const pairs=["NZD/USD-OTC","EUR/CAD-OTC","USD/BRL-OTC","USD/PKR-OTC","AUD/USD-OTC"];
+  let out=`DATE: ${new Date().toLocaleDateString('en-GB')}\n\n⏰ UTC +6:00 ;  MTG :- 1 STEP\n\n       (◉‿◉) Blackout (◉‿◉)\n\n⌛️ 1 minutes :- \n\n`;
+  const now=new Date();
+  for(let i=0;i<5;i++){
+    const t=new Date(now.getTime()+i*5*60000);
+    const time=t.toTimeString().slice(0,5);
+    const pair=pairs[i%pairs.length];
+    out+=`𝙼𝟷 ${time} ${pair}\n`;
+  }
+  out+=`\nSoftware: Blackout\nOwner: @TraderParvej`;
+  document.getElementById('output').textContent=out;
+}
+generateSignals();
+</script>
 </body>
 </html>
