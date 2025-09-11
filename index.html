@@ -1,143 +1,109 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Blackout Quotex Signal — Login</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Page</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    .glass {
-      background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
-      backdrop-filter: blur(6px);
-      animation: fadeIn 1.2s ease-out;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .btn-animate {
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .btn-animate:hover {
-      transform: translateY(-2px) scale(1.02);
-      box-shadow: 0 8px 20px rgba(79,70,229,0.4);
-    }
-    .fade-in-up {
-      opacity: 0;
-      animation: fadeUp 1s ease forwards;
-      animation-delay: 0.3s;
-    }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
 </head>
-<body class="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black flex items-center justify-center p-6">
-  <main class="w-full max-w-md fade-in-up">
-    <section class="glass rounded-2xl shadow-2xl p-8 border border-gray-800">
-      <header class="mb-6 text-center">
-        <h1 class="text-3xl font-extrabold text-white tracking-tight">Blackout Quotex Signal</h1>
-        <p class="text-sm text-gray-400 mt-2">High Accuracy Advance Signal</p>
-      </header>
-
-      <form id="loginForm" class="space-y-5" onsubmit="return handleLogin(event)">
-        <div>
-          <label for="username" class="block text-sm font-medium text-gray-300">Username</label>
-          <input id="username" name="username" type="text" value="Blackoutpro" autocomplete="username"
-                 class="mt-1 w-full rounded-lg bg-gray-900 border border-gray-700 text-gray-100 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-transform duration-200 focus:scale-[1.02]" />
-        </div>
-
-        <div>
-          <label for="password" class="block text-sm font-medium text-gray-300">Password</label>
-          <div class="relative mt-1">
-            <input id="password" name="password" type="password" value="12580" autocomplete="current-password"
-                   class="w-full rounded-lg bg-gray-900 border border-gray-700 text-gray-100 px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-transform duration-200 focus:scale-[1.02]" />
-            <button type="button" id="togglePwd" aria-label="Toggle password" class="absolute inset-y-0 right-0 px-3 py-2 text-gray-300 hover:scale-110 transition-transform">Show</button>
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between text-sm text-gray-300">
-          <label class="flex items-center gap-2">
-            <input id="remember" type="checkbox" class="h-4 w-4 rounded bg-gray-800 border-gray-600" />
-            Remember me
-          </label>
-          <a href="#" class="text-indigo-400 hover:underline">Forgot?</a>
-        </div>
-
-        <div>
-          <button type="submit" class="btn-animate w-full py-3 rounded-lg bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-semibold shadow-md">Sign in</button>
-        </div>
-
-        <p id="message" class="text-center text-sm mt-2 text-gray-400"></p>
-      </form>
-
-      <div class="flex justify-center mb-3 mt-4 animate-bounce">
-        <a href="https://t.me/+ZUtf8GenYKUwYjg1" target="_blank" rel="noopener" aria-label="Telegram Support" class="inline-flex items-center gap-2 text-indigo-400 hover:opacity-90">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="20" height="20" fill="currentColor" aria-hidden="true">
-            <path d="M120 0C53.7 0 0 53.7 0 120s53.7 120 120 120 120-53.7 120-120S186.3 0 120 0zm56.6 81.9l-19.8 92.5c-1.5 6.9-5.5 8.6-11.1 5.4l-30.7-22.6-14.8 14.2c-1.6 1.6-2.9 2.9-5.9 2.9l2.1-30.1 54.8-49.6c2.4-2.1-.5-3.3-3.7-1.2l-67.8 42.6-29.2-9.1c-6.3-1.9-6.4-6.3 1.3-9.3l113.9-43.8c5.2-1.9 9.7 1.2 8 8.1z"/>
-          </svg>
-          <span class="text-sm">Telegram Support</span>
-        </a>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen">
+  <div class="bg-gray-800 p-8 rounded-2xl shadow-md w-full max-w-md">
+    <h2 class="text-3xl font-bold text-white mb-6 text-center">Login</h2>
+    <form onsubmit="return handleLogin(event)" class="space-y-4">
+      <div>
+        <label class="block text-gray-300 mb-1">Username</label>
+        <input id="username" type="text" class="w-full px-4 py-2 rounded-lg bg-gray-700 text-white focus:outline-none">
       </div>
-      <footer class="mt-6 text-xs text-gray-500 text-center">
-        © <span id="year"></span> Blackout Quotex Signal — Secure Login Portal
-      </footer>
-    </section>
-  </main>
+      <div>
+        <label class="block text-gray-300 mb-1">Password</label>
+        <div class="relative">
+          <input id="password" type="password" class="w-full px-4 py-2 rounded-lg bg-gray-700 text-white focus:outline-none">
+          <button type="button" id="togglePwd" class="absolute right-2 top-2 text-gray-400 text-sm">Show</button>
+        </div>
+      </div>
+      <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded-lg">Login</button>
+    </form>
+    <p id="message" class="mt-4 text-center text-sm"></p>
+    <p class="mt-1 text-center text-sm text-yellow-400" id="licenseInfo"></p>
+    <p class="mt-4 text-center text-gray-400 text-xs">&copy; <span id="year"></span> All rights reserved.</p>
+  </div>
 
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
 
-    const pwd = document.getElementById('password');
-    const toggle = document.getElementById('togglePwd');
-    toggle.addEventListener('click', () => {
-      if (pwd.type === 'password') {
-        pwd.type = 'text';
-        toggle.textContent = 'Hide';
-      } else {
-        pwd.type = 'password';
-        toggle.textContent = 'Show';
-      }
-    });
+const pwd = document.getElementById('password');
+const toggle = document.getElementById('togglePwd');
+toggle.addEventListener('click', () => {
+  if (pwd.type === 'password') {
+    pwd.type = 'text';
+    toggle.textContent = 'Hide';
+  } else {
+    pwd.type = 'password';
+    toggle.textContent = 'Show';
+  }
+});
 
-    function handleLogin(e) {
-      e.preventDefault();
-      const u = document.getElementById('username').value.trim();
-      const p = document.getElementById('password').value.trim();
-      const message = document.getElementById('message');
+function handleLogin(e){
+  e.preventDefault();
+  const u = document.getElementById('username').value.trim();
+  const p = document.getElementById('password').value.trim();
+  const message = document.getElementById('message');
+  const licenseInfo = document.getElementById('licenseInfo');
 
-      const correctUser = 'Blackoutpro';
-      const correctPass = '12580';
-      const correctLicense = '10258';
+  const correctUser = 'Blackoutpro';
+  const correctPass = '12580';
 
-      if (!u || !p) {
-        message.textContent = 'Please enter username and password.';
-        message.style.color = '#fca5a5';
+  if (!u || !p) {
+    message.textContent = 'Please enter username and password.';
+    message.style.color = '#fca5a5';
+    return false;
+  }
+
+  if (u === correctUser && p === correctPass) {
+    const storedDate = localStorage.getItem('licenseActivated');
+    const now = new Date();
+
+    if (storedDate) {
+      const activateDate = new Date(storedDate);
+      const diffDays = Math.floor((now - activateDate)/(1000*60*60*24));
+      if (diffDays < 30) {
+        const daysLeft = 30 - diffDays;
+        message.textContent = 'Login successful — welcome back!';
+        message.style.color = '#86efac';
+        licenseInfo.textContent = '🕒 লাইসেন্সের মেয়াদ শেষ হতে বাকি আছে: ' + daysLeft + ' দিন';
         return false;
-      }
-
-      if (u === correctUser && p === correctPass) {
-        const license = prompt('Please enter your license key:');
-        if (license === correctLicense) {
-          message.textContent = 'Login successful — welcome!';
-          message.style.color = '#86efac';
-          setTimeout(() => {
-            window.location.href = '#dashboard';
-          }, 700);
-        } else {
-          message.innerHTML =
-            'Invalid license key. লাইসেন্স পেতে টেলিগ্রামে জয়েন করুন: ' +
-            '<a href="https://t.me/+ZUtf8GenYKUwYjg1" target="_blank" class="underline text-indigo-400">Join Telegram</a>';
-          message.style.color = '#fca5a5';
-        }
       } else {
-        message.textContent = 'Username or password is incorrect.';
-        message.style.color = '#fca5a5';
+        localStorage.removeItem('licenseActivated');
+        return askLicense();
       }
-
-      return false;
+    } else {
+      return askLicense();
     }
-  </script>
+  } else {
+    message.textContent = 'Username or password is incorrect.';
+    message.style.color = '#fca5a5';
+  }
+  return false;
+}
+
+function askLicense() {
+  const message = document.getElementById('message');
+  const licenseInfo = document.getElementById('licenseInfo');
+  const license = prompt('Please enter your license key:');
+  if (license === '10258') {
+    localStorage.setItem('licenseActivated', new Date().toISOString());
+    message.textContent = 'License accepted! Login successful.';
+    message.style.color = '#86efac';
+    licenseInfo.textContent = '🕒 লাইসেন্সের মেয়াদ শেষ হতে বাকি আছে: 30 দিন';
+  } else {
+    message.innerHTML =
+      'Invalid license key. লাইসেন্স পেতে টেলিগ্রামে জয়েন করুন: '+
+      '<a href="https://t.me/+ZUtf8GenYKUwYjg1" target="_blank" class="underline text-indigo-400">Join Telegram</a>';
+    message.style.color = '#fca5a5';
+    licenseInfo.textContent = '';
+  }
+  return false;
+}
+</script>
 </body>
 </html>
