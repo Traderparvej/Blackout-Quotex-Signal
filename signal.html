@@ -39,6 +39,7 @@ header h1 { font-size:2.5rem; font-weight:900; }
 header p { font-size:0.875rem; color:#9ca3af; margin-top:0.25rem; }
 a { color:#6366f1; text-decoration:none; }
 a:hover { text-decoration:underline; }
+#analyzingMsg { text-align:center; font-size:1rem; color:#facc15; margin-top:0.5rem; font-weight:bold; display:none; }
 </style>
 </head>
 <body>
@@ -49,6 +50,7 @@ a:hover { text-decoration:underline; }
 <h1>🖤 Blackout Signal</h1>
 <span id="licenseCountdown">🕒 License Active</span>
 <p>Software: Blackout Signal | Owner: <a href="https://t.me/TraderParvej" target="_blank">@TraderParvej</a></p>
+<span id="analyzingMsg">Market Analyzing…</span>
 </header>
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -158,10 +160,16 @@ const boldLetters = {'A':'𝙰','B':'𝙱','C':'𝙲','D':'𝙳','E':'𝙴','F':
 function unicodeTime(hh, mm){ return `${hh.split('').map(d=>boldDigits[d]).join('')}:${mm.split('').map(d=>boldDigits[d]).join('')}`; }
 function unicodeAsset(asset){ return asset.toUpperCase().split('').map(c=>boldLetters[c]||c).join(''); }
 
-/* Signals with 2-5 min random gap */
-function generateSignals(){
+/* Generate Signals with 5 min offset and 10–20s random delay */
+async function generateSignals(){
   const selectedAssets = getSelectedAssets();
   if(selectedAssets.length===0){ alert("Please select at least one asset."); return; }
+
+  const analyzing = document.getElementById('analyzingMsg');
+  analyzing.style.display = 'block';
+  document.getElementById('signalOutput').textContent = 'Preparing signals…';
+  
+  await new Promise(r => setTimeout(r, 1500)); // small initial delay for UX
 
   const count = parseInt(document.getElementById('signalCount').value) || 1;
   const date = document.getElementById('startDate').value || new Date().toLocaleDateString('en-GB');
@@ -171,17 +179,27 @@ function generateSignals(){
   let output = `DATE: ${date}\n\n⏰ UTC ${utc} ;  MTG :- 1 STEP\n\n       (◉‿◉) Blackout (◉‿◉)\n\n⌛️ ${timeframe} :- \n\n`;
 
   let currentTime = new Date();
+  currentTime.setMinutes(currentTime.getMinutes() + 5); // start 5 minutes after now
+
   for(let i=1;i<=count;i++){
     const asset = selectedAssets[Math.floor(Math.random()*selectedAssets.length)];
     const hh = currentTime.getHours().toString().padStart(2,'0');
     const mm = currentTime.getMinutes().toString().padStart(2,'0');
     output += `𝙼𝟷 ${unicodeTime(hh, mm)} ${unicodeAsset(asset)}\n`;
-    // Random 2-5 minutes gap
-    currentTime.setMinutes(currentTime.getMinutes()+Math.floor(Math.random()*4)+2);
+
+    // 2–5 min random gap
+    currentTime.setMinutes(currentTime.getMinutes() + Math.floor(Math.random()*4)+2);
+
+    // Update output incrementally
+    document.getElementById('signalOutput').textContent = output;
+
+    // 10–20s random delay between signals
+    await new Promise(r => setTimeout(r, (Math.floor(Math.random()*11)+10)*1000));
   }
 
   output += `\nSoftware:Blackout\nOwner: @TraderParvej`;
   document.getElementById('signalOutput').textContent = output;
+  analyzing.style.display = 'none';
 }
 
 function resetSignal(){ document.getElementById('signalOutput').textContent='DATE: —'; }
