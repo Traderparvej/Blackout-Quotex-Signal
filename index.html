@@ -12,14 +12,14 @@
     animation: fadeIn 1.2s ease-out;
   }
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity:0; transform:translateY(20px); }
+    to { opacity:1; transform:translateY(0); }
   }
   .btn-animate { transition: transform 0.2s ease, box-shadow 0.2s ease; }
-  .btn-animate:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 8px 20px rgba(79,70,229,0.4); }
+  .btn-animate:hover { transform: translateY(-2px) scale(1.02); box-shadow:0 8px 20px rgba(79,70,229,0.4); }
   .fade-in-up { opacity:0; animation:fadeUp 1s ease forwards; animation-delay:0.3s; }
-  @keyframes fadeUp { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
-  .modal { display:none; position:fixed; inset:0; background: rgba(0,0,0,0.6); backdrop-filter:blur(4px); justify-content:center; align-items:center; z-index:50; }
+  @keyframes fadeUp { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
+  .modal { display:none; position:fixed; inset:0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content:center; align-items:center; z-index:50; }
   .modal.active { display:flex; }
 </style>
 </head>
@@ -98,14 +98,11 @@
 </div>
 
 <script>
-document.getElementById('year').textContent = new Date().getFullYear();
+document.getElementById('year').textContent=new Date().getFullYear();
 
-const pwd = document.getElementById('password');
-const toggle = document.getElementById('togglePwd');
-toggle.addEventListener('click', () => {
-  if(pwd.type==='password'){ pwd.type='text'; toggle.textContent='Hide'; }
-  else { pwd.type='password'; toggle.textContent='Show'; }
-});
+const pwd=document.getElementById('password');
+const toggle=document.getElementById('togglePwd');
+toggle.addEventListener('click',()=>{ pwd.type==='password'? (pwd.type='text', toggle.textContent='Hide') : (pwd.type='password', toggle.textContent='Show'); });
 
 const correctUser='Blackoutpro';
 const correctPass='12580';
@@ -130,8 +127,10 @@ function handleLogin(e){
       if(diffDays<30){
         message.textContent='Login successful — welcome back!';
         message.style.color='#86efac';
-        licenseInfo.textContent='🕒 লাইসেন্সের মেয়াদ চলমান';
+        licenseInfo.textContent='🕒 লাইসেন্স চলমান';
         startCountdown(activateDate);
+        // Redirect to dashboard after 1 sec
+        setTimeout(()=>{ window.location.href='#dashboard'; },1000);
         return false;
       } else { localStorage.removeItem('licenseActivated'); openModal(); }
     } else { openModal(); }
@@ -139,12 +138,7 @@ function handleLogin(e){
   return false;
 }
 
-function openModal(){
-  document.getElementById('licenseModal').classList.add('active');
-  document.getElementById('licenseInput').value='';
-  document.getElementById('licenseMsg').classList.add('hidden');
-}
-
+function openModal(){ document.getElementById('licenseModal').classList.add('active'); document.getElementById('licenseInput').value=''; document.getElementById('licenseMsg').classList.add('hidden'); }
 function closeModal(){ document.getElementById('licenseModal').classList.remove('active'); }
 
 function checkLicense(){
@@ -155,13 +149,14 @@ function checkLicense(){
 
   if(key===correctLicense){
     const now=new Date();
-    localStorage.setItem('licenseActivated', now.toISOString());
+    localStorage.setItem('licenseActivated',now.toISOString());
     msg.classList.add('hidden');
     closeModal();
     message.textContent='License accepted! Login successful.';
     message.style.color='#86efac';
-    licenseInfo.textContent='🕒 লাইসেন্সের মেয়াদ চলমান';
+    licenseInfo.textContent='🕒 লাইসেন্স চলমান';
     startCountdown(now);
+    setTimeout(()=>{ window.location.href='#dashboard'; },1000);
   } else { msg.textContent='Invalid license key.'; msg.classList.remove('hidden'); }
 }
 
@@ -171,8 +166,7 @@ function startCountdown(startDate){
 
   countdownInterval=setInterval(()=>{
     const now=new Date();
-    const endDate=new Date(startDate);
-    endDate.setDate(endDate.getDate()+30);
+    const endDate=new Date(startDate); endDate.setDate(endDate.getDate()+30);
     const diff=endDate-now;
     if(diff<=0){ clearInterval(countdownInterval); countdownEl.textContent='🕒 লাইসেন্স মেয়াদ শেষ!'; return; }
     const days=Math.floor(diff/(1000*60*60*24));
