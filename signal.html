@@ -66,23 +66,26 @@ label { font-size:0.875rem; color:#d1d5db; }
 
   <!-- Settings Panel -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
     <div>
       <label>UTC Offset</label>
       <select id="utcOffset">
         <option value="+0:00">UTC +0:00</option>
-        <option value="+6:00">UTC +6:00 (BD)</option>
-        <option value="-5:00">EST</option>
-        <option value="-8:00">PST</option>
+        <option value="+6:00">UTC +6:00 (Bangladesh)</option>
+        <option value="+5:30">UTC +5:30 (India)</option>
+        <option value="-5:00">UTC -5:00 (EST)</option>
+        <option value="-8:00">UTC -8:00 (PST)</option>
       </select>
     </div>
+
     <div>
       <label>Market</label>
       <select id="marketSelect">
         <option>OTC</option>
-        <option>Forex</option>
-        <option>Crypto</option>
+        <option>Real</option>
       </select>
     </div>
+
     <div>
       <label>Timeframe</label>
       <select id="timeframeSelect">
@@ -92,14 +95,17 @@ label { font-size:0.875rem; color:#d1d5db; }
         <option>1 hour</option>
       </select>
     </div>
+
     <div>
       <label>Start Date</label>
       <input type="date" id="startDate"/>
     </div>
+
     <div>
       <label>Signal Count</label>
-      <input type="number" id="signalCount" value="0" readonly/>
+      <input type="number" id="signalCount" value="0" min="0"/>
     </div>
+
     <div>
       <label>Asset</label>
       <select id="assetSelect">
@@ -136,7 +142,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
 function generateSignal(){
   const countInput = document.getElementById('signalCount');
   let count = parseInt(countInput.value) || 0;
-  count++;
+  count++; // Increment for demo, user can manually adjust
   countInput.value = count;
 
   const output = document.getElementById('signalOutput');
