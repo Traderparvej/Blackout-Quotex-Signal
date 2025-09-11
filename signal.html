@@ -49,7 +49,7 @@ a:hover { text-decoration:underline; }
 <h1>🖤 Blackout Signal</h1>
 <!-- License countdown displayed under header -->
 <span id="licenseCountdown">🕒 License Active</span>
-<p>Software: Blackout Signal | Owner: <a href="https://t.me/YOUR_TELEGRAM_USERNAME" target="_blank">@TraderParvej</a></p>
+<p>Software: Blackout Signal | Owner: <a href="https://t.me/TraderParvej" target="_blank">@TraderParvej</a></p>
 </header>
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -111,15 +111,14 @@ a:hover { text-decoration:underline; }
 </div>
 
 <footer class="mt-6 text-xs text-gray-500 text-center">
-© <span id="year"></span> <a href="https://t.me/YOUR_TELEGRAM_GROUP_LINK" target="_blank">Join Telegram Group</a>
+<a href="https://t.me/+ZUtf8GenYKUwYjg1" target="_blank">Join Telegram Group</a>
 </footer>
 
 </section>
 
 <script>
-document.getElementById('year').textContent = new Date().getFullYear();
+/* Year is no longer needed */
 
-/* Assets */
 const assetOptions = {
 "OTC": ["AUD/USD-OTC", "NZD/USD-OTC", "EUR/USD-OTC", "EUR/CAD-OTC", "USD/BRL-OTC", "USD/PKR-OTC"],
 "Real": ["BTC/USDT", "ETH/USDT", "XRP/USDT", "BNB/USDT", "ADA/USDT"]
@@ -143,13 +142,11 @@ function getSelectedAssets(){
   return Array.from(document.querySelectorAll('#assetContainer input[type=checkbox]:checked')).map(cb=>cb.value);
 }
 
-/* Unicode helpers */
 const boldDigits = {'0':'𝟶','1':'𝟷','2':'𝟸','3':'𝟹','4':'𝟺','5':'𝟻','6':'𝟼','7':'𝟽','8':'𝟾','9':'𝟿'};
 const boldLetters = {'A':'𝙰','B':'𝙱','C':'𝙲','D':'𝙳','E':'𝙴','F':'𝙵','G':'𝙶','H':'𝙷','I':'𝙸','J':'𝙹','K':'𝙺','L':'𝙻','M':'𝙼','N':'𝙽','O':'𝙾','P':'𝙿','Q':'𝟀','R':'𝚁','S':'𝚂','T':'𝚃','U':'𝚄','V':'𝚅','W':'𝚆','X':'𝚇','Y':'𝚈','Z':'𝚉','/':'/','-':'-'};
 function unicodeTime(hh, mm){ return `${hh.split('').map(d=>boldDigits[d]).join('')}:${mm.split('').map(d=>boldDigits[d]).join('')}`; }
 function unicodeAsset(asset){ return asset.toUpperCase().split('').map(c=>boldLetters[c]||c).join(''); }
 
-/* Signals */
 function generateSignals(){
   const selectedAssets = getSelectedAssets();
   if(selectedAssets.length===0){ alert("Please select at least one asset."); return; }
