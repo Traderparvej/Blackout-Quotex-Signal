@@ -3,59 +3,85 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Signal Generator — Blackout Quotex</title>
+<title>Signal Generator — Preview</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-body { background: linear-gradient(to bottom, #111827, #1f2937); color: white; }
-.glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(6px); border-radius: 1rem; padding: 2rem; }
-.btn-animate { transition: transform 0.2s ease, box-shadow 0.2s ease; }
-.btn-animate:hover { transform: translateY(-2px) scale(1.02); box-shadow:0 8px 20px rgba(79,70,229,0.4); }
+  body { background: linear-gradient(to bottom, #111827, #1f2937); color:white; }
+  .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(6px); border-radius:1rem; padding:2rem; }
+  .btn-animate { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .btn-animate:hover { transform: translateY(-2px) scale(1.02); box-shadow:0 8px 20px rgba(79,70,229,0.4); }
+  .fade-in-up { opacity:0; animation:fadeUp 1s ease forwards; animation-delay:0.3s; }
+  @keyframes fadeUp { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
 </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-6">
 
-<section class="glass w-full max-w-lg flex flex-col items-center space-y-6">
-  <h1 class="text-3xl font-bold">Signal Generator</h1>
-  <p id="licenseStatus" class="text-yellow-400 font-semibold"></p>
-  
-  <div class="flex gap-4">
-    <button onclick="generateSignal('BUY')" class="btn-animate px-6 py-3 bg-green-600 rounded-lg hover:bg-green-500 font-semibold">BUY</button>
-    <button onclick="generateSignal('SELL')" class="btn-animate px-6 py-3 bg-red-600 rounded-lg hover:bg-red-500 font-semibold">SELL</button>
+<section class="glass w-full max-w-3xl fade-in-up space-y-6">
+
+  <header class="text-center">
+    <h1 class="text-3xl font-bold mb-2">Blackout Quotex Signal Generator</h1>
+    <p class="text-gray-400">Professional Signal Panel — Preview Mode</p>
+  </header>
+
+  <!-- Signal Settings Panel -->
+  <div class="flex flex-col md:flex-row gap-4">
+    <div class="flex-1 space-y-3">
+      <label class="block text-gray-300">Market Selection</label>
+      <select class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 focus:outline-none">
+        <option>BTC/USDT</option>
+        <option>ETH/USDT</option>
+        <option>XRP/USDT</option>
+      </select>
+    </div>
+    <div class="flex-1 space-y-3">
+      <label class="block text-gray-300">Timeframe</label>
+      <select class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 focus:outline-none">
+        <option>1m</option>
+        <option>5m</option>
+        <option>15m</option>
+        <option>1h</option>
+      </select>
+    </div>
+    <div class="flex-1 space-y-3">
+      <label class="block text-gray-300">Timezone</label>
+      <select class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 focus:outline-none">
+        <option>UTC</option>
+        <option>GMT+5:30</option>
+        <option>EST</option>
+        <option>PST</option>
+      </select>
+    </div>
   </div>
 
-  <p id="lastSignal" class="text-xl text-indigo-400 font-semibold"></p>
-  <button onclick="goBack()" class="mt-4 px-6 py-3 bg-indigo-600 rounded-lg hover:bg-indigo-500">Back to Login</button>
+  <!-- Generate Signal Buttons -->
+  <div class="flex gap-4 justify-center mt-4">
+    <button class="btn-animate px-6 py-3 bg-green-600 rounded-lg hover:bg-green-500 font-semibold" onclick="generateSignal('BUY')">BUY</button>
+    <button class="btn-animate px-6 py-3 bg-red-600 rounded-lg hover:bg-red-500 font-semibold" onclick="generateSignal('SELL')">SELL</button>
+  </div>
+
+  <!-- Signal Output -->
+  <div class="mt-6 text-center">
+    <p class="text-gray-400 mb-2">Last Signal:</p>
+    <p id="lastSignal" class="text-xl font-bold text-indigo-400">No signals yet</p>
+  </div>
+
+  <!-- Footer -->
+  <footer class="mt-6 text-xs text-gray-500 text-center">
+    © <span id="year"></span> Blackout Quotex Signal — Preview Mode
+  </footer>
+
 </section>
 
 <script>
-const correctLicense='10258';
-
-function checkLicense(){
-  const licenseDate=localStorage.getItem('licenseActivated');
-  if(!licenseDate){
-    alert('Please login first!');
-    window.location.href='index.html';
-    return false;
-  }
-  const now=new Date();
-  const activateDate=new Date(licenseDate);
-  const diffDays=Math.floor((now-activateDate)/(1000*60*60*24));
-  if(diffDays>=30){
-    alert('License expired! Login again.');
-    window.location.href='index.html';
-    return false;
-  }
-  document.getElementById('licenseStatus').textContent='🕒 লাইসেন্স valid — '+(30-diffDays)+' days left';
-}
+document.getElementById('year').textContent = new Date().getFullYear();
 
 function generateSignal(type){
-  const timestamp=new Date().toLocaleTimeString();
-  document.getElementById('lastSignal').textContent=`${type} Signal Generated at ${timestamp}`;
+  const timestamp = new Date().toLocaleTimeString();
+  document.getElementById('lastSignal').textContent = `${type} Signal Generated at ${timestamp}`;
 }
 
-function goBack(){ window.location.href='index.html'; }
-
-checkLicense();
+// ✅ This is preview mode — login/redirect disabled
 </script>
+
 </body>
 </html>
