@@ -6,30 +6,123 @@
 <title>🖤 Blackout Signal Generator</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-body { background: linear-gradient(to bottom,#111827,#1f2937); color:white; font-family:'Inter',sans-serif; }
-.glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(6px); border-radius:1.25rem; padding:2rem; box-shadow:0 10px 25px rgba(0,0,0,0.5);}
-.btn-animate { transition: transform 0.2s ease, box-shadow 0.2s ease; }
-.btn-animate:hover { transform: translateY(-2px) scale(1.02); box-shadow:0 8px 20px rgba(79,70,229,0.4); }
-input, select { background-color:#1f2937; color:white; border:1px solid #374151; border-radius:0.5rem; padding:0.5rem; width:100%; }
-.asset-container { max-height:150px; overflow-y:auto; border:1px solid #374151; border-radius:0.75rem; padding:0.5rem; background:#1f2937; }
-.asset-container label { display:flex; align-items:center; gap:0.5rem; padding:0.4rem 0.75rem; border-radius:0.5rem; cursor:pointer; transition: all 0.2s; }
-.asset-container label:hover { background-color:#2563eb; color:white; }
-.asset-container input[type=checkbox] { accent-color:#6366f1; width:18px; height:18px; }
-.signal-output { background:#111827; border:1px solid #374151; border-radius:0.5rem; padding:1rem; min-height:220px; color:#60a5fa; white-space:pre-wrap; overflow-y:auto; font-family:monospace; font-weight:bold; }
-/* License countdown style */
-#licenseCountdown { position:fixed; top:1rem; left:1rem; background:rgba(31,41,55,0.8); padding:0.5rem 1rem; border-radius:0.5rem; font-weight:bold; color:#34d399; z-index:50; font-family:sans-serif; }
+/* Global Styles */
+body { 
+  background: linear-gradient(to bottom,#111827,#1f2937); 
+  color:white; 
+  font-family:'Inter',sans-serif; 
+  min-height:100vh; 
+  margin:0; 
+  padding:0; 
+  display:flex; 
+  align-items:center; 
+  justify-content:center; 
+}
+
+/* Glass Panel */
+.glass { 
+  background: rgba(255,255,255,0.05); 
+  backdrop-filter: blur(12px); 
+  border-radius:1.5rem; 
+  padding:2rem; 
+  box-shadow:0 15px 30px rgba(0,0,0,0.5); 
+  width:100%; 
+  max-width:3xl; 
+}
+
+/* Buttons */
+.btn-animate { 
+  transition: all 0.3s ease; 
+}
+.btn-animate:hover { 
+  transform: translateY(-3px) scale(1.03); 
+  box-shadow:0 10px 25px rgba(79,70,229,0.5); 
+}
+
+/* Inputs and Selects */
+input, select { 
+  background-color:#1f2937; 
+  color:white; 
+  border:1px solid #374151; 
+  border-radius:0.5rem; 
+  padding:0.6rem; 
+  width:100%; 
+  font-size:0.95rem;
+}
+
+/* Asset List */
+.asset-container { 
+  max-height:160px; 
+  overflow-y:auto; 
+  border:1px solid #374151; 
+  border-radius:0.75rem; 
+  padding:0.5rem; 
+  background:#1f2937; 
+}
+.asset-container label { 
+  display:flex; 
+  align-items:center; 
+  gap:0.5rem; 
+  padding:0.45rem 0.75rem; 
+  border-radius:0.5rem; 
+  cursor:pointer; 
+  transition: all 0.2s; 
+}
+.asset-container label:hover { 
+  background-color:#2563eb; 
+  color:white; 
+}
+.asset-container input[type=checkbox] { 
+  accent-color:#6366f1; 
+  width:18px; 
+  height:18px; 
+}
+
+/* Signal Output */
+.signal-output { 
+  background:#111827; 
+  border:1px solid #374151; 
+  border-radius:0.5rem; 
+  padding:1rem; 
+  min-height:220px; 
+  color:#60a5fa; 
+  white-space:pre-wrap; 
+  overflow-y:auto; 
+  font-family:monospace; 
+  font-weight:bold; 
+}
+
+/* License Countdown */
+#licenseCountdown { 
+  position:fixed; 
+  top:1rem; 
+  left:1rem; 
+  background:rgba(31,41,55,0.9); 
+  padding:0.55rem 1rem; 
+  border-radius:0.75rem; 
+  font-weight:bold; 
+  color:#34d399; 
+  z-index:50; 
+  font-family:sans-serif; 
+  font-size:0.95rem; 
+  box-shadow:0 4px 15px rgba(0,0,0,0.5);
+}
+
+/* Header Text */
+header h1 { font-size:2.5rem; font-weight:900; }
+header p { font-size:0.875rem; color:#9ca3af; }
 </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-6">
+<body>
 
 <!-- License Countdown -->
 <div id="licenseCountdown">🕒 License Remaining: --</div>
 
-<section class="glass w-full max-w-3xl space-y-6">
+<section class="glass space-y-6">
 
 <header class="text-center">
-<h1 class="text-3xl font-extrabold mb-1">🖤 Blackout Signal</h1>
-<p class="text-gray-400">Software: Blackout Signal | Owner: @TraderParvej</p>
+<h1>🖤 Blackout Signal</h1>
+<p>Software: Blackout Signal | Owner: @TraderParvej</p>
 </header>
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -99,11 +192,11 @@ input, select { background-color:#1f2937; color:white; border:1px solid #374151;
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
 
+/* Assets */
 const assetOptions = {
 "OTC": ["AUD/USD-OTC", "NZD/USD-OTC", "EUR/USD-OTC", "EUR/CAD-OTC", "USD/BRL-OTC", "USD/PKR-OTC"],
 "Real": ["BTC/USDT", "ETH/USDT", "XRP/USDT", "BNB/USDT", "ADA/USDT"]
 };
-
 function updateAssets(){
   const market = document.getElementById('marketSelect').value;
   const container = document.getElementById('assetContainer');
@@ -119,23 +212,17 @@ function updateAssets(){
   });
 }
 updateAssets();
-
 function getSelectedAssets(){
   return Array.from(document.querySelectorAll('#assetContainer input[type=checkbox]:checked')).map(cb=>cb.value);
 }
 
-// Bold monospace mapping only for M1 + digits + asset
+/* Unicode helpers */
 const boldDigits = {'0':'𝟶','1':'𝟷','2':'𝟸','3':'𝟹','4':'𝟺','5':'𝟻','6':'𝟼','7':'𝟽','8':'𝟾','9':'𝟿'};
 const boldLetters = {'A':'𝙰','B':'𝙱','C':'𝙲','D':'𝙳','E':'𝙴','F':'𝙵','G':'𝙶','H':'𝙷','I':'𝙸','J':'𝙹','K':'𝙺','L':'𝙻','M':'𝙼','N':'𝙽','O':'𝙾','P':'𝙿','Q':'𝟀','R':'𝚁','S':'𝚂','T':'𝚃','U':'𝚄','V':'𝚅','W':'𝚆','X':'𝚇','Y':'𝚈','Z':'𝚉','/':'/','-':'-'};
+function unicodeTime(hh, mm){ return `${hh.split('').map(d=>boldDigits[d]).join('')}:${mm.split('').map(d=>boldDigits[d]).join('')}`; }
+function unicodeAsset(asset){ return asset.toUpperCase().split('').map(c=>boldLetters[c]||c).join(''); }
 
-function unicodeTime(hh, mm){
-  return `${hh.split('').map(d=>boldDigits[d]).join('')}:${mm.split('').map(d=>boldDigits[d]).join('')}`;
-}
-
-function unicodeAsset(asset){
-  return asset.toUpperCase().split('').map(c=>boldLetters[c]||c).join('');
-}
-
+/* Signals */
 function generateSignals(){
   const selectedAssets = getSelectedAssets();
   if(selectedAssets.length===0){ alert("Please select at least one asset."); return; }
@@ -153,22 +240,16 @@ function generateSignals(){
     const hh = currentTime.getHours().toString().padStart(2,'0');
     const mm = currentTime.getMinutes().toString().padStart(2,'0');
     output += `𝙼𝟷 ${unicodeTime(hh, mm)} ${unicodeAsset(asset)}\n`;
-    currentTime.setMinutes(currentTime.getMinutes()+Math.floor(Math.random()*4)+3); // 3-6 min random
+    currentTime.setMinutes(currentTime.getMinutes()+Math.floor(Math.random()*4)+3);
   }
 
   output += `\nSoftware:Blackout\nOwner: @TraderParvej`;
   document.getElementById('signalOutput').textContent = output;
 }
+function resetSignal(){ document.getElementById('signalOutput').textContent='DATE: —'; }
+function copySignal(){ navigator.clipboard.writeText(document.getElementById('signalOutput').textContent).then(()=>alert('Signal copied!')); }
 
-function resetSignal(){
-  document.getElementById('signalOutput').textContent='DATE: —';
-}
-
-function copySignal(){
-  navigator.clipboard.writeText(document.getElementById('signalOutput').textContent).then(()=>alert('Signal copied!'));
-}
-
-/* License countdown logic */
+/* License Countdown */
 let countdownInterval;
 function startLicenseCountdown(){
   const countdownEl = document.getElementById('licenseCountdown');
@@ -191,8 +272,6 @@ function startLicenseCountdown(){
     countdownEl.textContent=`🕒 License Remaining: ${days}d ${hours}h ${minutes}m ${seconds}s`;
   },1000);
 }
-
-// Start countdown on page load
 startLicenseCountdown();
 </script>
 </body>
