@@ -1,93 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Blackout Quotex Signal</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-  body { background: linear-gradient(to bottom,#0f172a,#1e293b,#000); color:#f8fafc; font-family:sans-serif; }
-  .glass { background:rgba(255,255,255,0.05); backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,0.1); }
-  .fade-in { animation:fadeIn 1s ease-out; }
-  @keyframes fadeIn{from{opacity:0;transform:translateY(15px);}to{opacity:1;transform:translateY(0);}}
+  .glass {
+    background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    backdrop-filter: blur(6px);
+  }
+  .fade-in { animation: fadeIn 1.2s ease-out; }
+  @keyframes fadeIn { from {opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
+  .signal-line {
+    font-family: monospace;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
 </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-6">
+<body class="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black text-gray-100 p-6">
 
-<main class="w-full max-w-2xl glass rounded-2xl shadow-2xl p-8 fade-in">
-
-  <!-- License Status -->
-  <div class="text-center mb-6">
-    <p id="licenseStatus" class="text-yellow-300 text-sm font-medium">🕒 লাইসেন্স চলমান 🕒</p>
-    <p id="licenseCountdown" class="text-green-400 text-sm font-semibold mt-1"></p>
+<header class="flex justify-between items-center mb-6">
+  <h1 class="text-2xl font-extrabold">📡 Blackout Quotex Signal</h1>
+  <div class="text-right text-sm">
+    <p id="licenseStatus" class="text-yellow-400 font-semibold">🕒 লাইসেন্স চলমান</p>
+    <p id="licenseCountdown" class="text-green-400"></p>
   </div>
+</header>
 
-  <!-- Signal Header -->
-  <header class="text-center mb-8">
-    <h1 class="text-3xl font-extrabold tracking-tight">📡 Blackout Signal Panel</h1>
-    <p class="text-gray-400 text-sm mt-2">High Accuracy Advanced Signals</p>
-  </header>
+<main class="glass rounded-2xl border border-gray-800 shadow-2xl p-6 fade-in max-w-2xl mx-auto">
+  <h2 class="text-xl mb-4 font-bold text-center text-indigo-400">Live Generated Signals</h2>
+  <div id="signals" class="space-y-3 text-center"></div>
 
-  <!-- Signal Output -->
-  <section class="space-y-4">
-    <pre id="output" class="whitespace-pre-wrap text-sm leading-relaxed bg-black/30 rounded-lg p-4 border border-gray-700"></pre>
-  </section>
-
-  <footer class="mt-8 text-center text-xs text-gray-500">
-    © <span id="year"></span> Blackout Quotex Signal — Professional Panel
-  </footer>
-
+  <div class="mt-6 text-center">
+    <button onclick="generateSignals()" class="px-6 py-3 rounded-lg bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-semibold shadow hover:scale-105 transition">
+      🔁 Generate Signals
+    </button>
+  </div>
 </main>
+
+<footer class="mt-10 text-center text-xs text-gray-500">
+  © <span id="year"></span> Blackout Quotex Signal — All Rights Reserved
+</footer>
 
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
 
-// ---- License countdown sync from localStorage ----
-let countdownInterval;
+// ---------- License Countdown Sync ----------
 function startLicenseCountdown(startDate){
-  const countdownEl=document.getElementById('licenseCountdown');
-  if(countdownInterval) clearInterval(countdownInterval);
-
-  countdownInterval=setInterval(()=>{
-    const now=new Date();
-    const endDate=new Date(startDate); endDate.setDate(endDate.getDate()+30);
-    const diff=endDate-now;
-    if(diff<=0){
-      clearInterval(countdownInterval);
-      countdownEl.textContent='🕒 লাইসেন্স মেয়াদ শেষ!';
-      return;
-    }
+  const countdownEl = document.getElementById('licenseCountdown');
+  setInterval(()=>{
+    const now = new Date();
+    const end = new Date(startDate);
+    end.setDate(end.getDate()+30);
+    const diff = end - now;
+    if(diff<=0){ countdownEl.textContent='🛑 লাইসেন্স মেয়াদ শেষ'; return; }
     const d=Math.floor(diff/(1000*60*60*24));
     const h=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
     const m=Math.floor((diff%(1000*60*60))/(1000*60));
     const s=Math.floor((diff%(1000*60))/1000);
-    countdownEl.textContent=`Expires: ${endDate.toLocaleDateString()} ${endDate.toLocaleTimeString()} — বাকি: ${d}d ${h}h ${m}m ${s}s`;
+    countdownEl.textContent = `Expires: ${end.toLocaleString()} | বাকি: ${d}d ${h}h ${m}m ${s}s`;
   },1000);
 }
 
-const storedDate=localStorage.getItem('licenseActivated');
-if(storedDate){
-  startLicenseCountdown(new Date(storedDate));
+// Load license date from localStorage
+const stored = localStorage.getItem('licenseActivated');
+if(stored){
+  startLicenseCountdown(new Date(stored));
 }else{
-  document.getElementById('licenseStatus').textContent='⚠️ লাইসেন্স পাওয়া যায়নি ⚠️';
-  document.getElementById('licenseCountdown').textContent='অনুগ্রহ করে লগইন করুন।';
+  document.getElementById('licenseStatus').textContent='🛑 লাইসেন্স নেই';
+  document.getElementById('licenseCountdown').textContent='Please login again.';
 }
 
-// ---- Demo signals (আপনার backend logic এখানে বসবে) ----
+// ---------- Random Signal Generator ----------
+function pad(n){return n.toString().padStart(2,'0');}
+
+const pairs = ['EURUSD','GBPUSD','USDJPY','AUDUSD','NZDUSD','EURCAD','USDBRL','USDPKR','USDCHF','EURGBP'];
+
 function generateSignals(){
-  const pairs=["NZD/USD-OTC","EUR/CAD-OTC","USD/BRL-OTC","USD/PKR-OTC","AUD/USD-OTC"];
-  let out=`DATE: ${new Date().toLocaleDateString('en-GB')}\n\n⏰ UTC +6:00 ;  MTG :- 1 STEP\n\n       (◉‿◉) Blackout (◉‿◉)\n\n⌛️ 1 minutes :- \n\n`;
-  const now=new Date();
-  for(let i=0;i<5;i++){
-    const t=new Date(now.getTime()+i*5*60000);
-    const time=t.toTimeString().slice(0,5);
-    const pair=pairs[i%pairs.length];
-    out+=`𝙼𝟷 ${time} ${pair}\n`;
+  const container = document.getElementById('signals');
+  container.innerHTML = '';
+  const signalCount = 5; // default number of signals
+  let current = new Date();
+  for(let i=0;i<signalCount;i++){
+    const gap = Math.floor(Math.random()*(6-3+1))+3; // 3–6 min
+    current.setMinutes(current.getMinutes()+gap);
+    const hh = pad(current.getHours());
+    const mm = pad(current.getMinutes());
+    const pair = pairs[Math.floor(Math.random()*pairs.length)];
+    const line = document.createElement('div');
+    line.className = 'signal-line';
+    line.textContent = `𝙼𝟷 ${hh}:${mm} ${pair}-𝙾𝚃𝙲`;
+    container.appendChild(line);
   }
-  out+=`\nSoftware: Blackout\nOwner: @TraderParvej`;
-  document.getElementById('output').textContent=out;
 }
-generateSignals();
 </script>
 </body>
 </html>
