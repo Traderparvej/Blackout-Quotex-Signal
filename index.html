@@ -6,7 +6,6 @@
 <title>Blackout Quotex Signal — Login</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-  /* Glass background animation */
   .glass {
     background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
     backdrop-filter: blur(6px);
@@ -16,39 +15,16 @@
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
   }
-  .btn-animate {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  .btn-animate:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 8px 20px rgba(79,70,229,0.4);
-  }
-  .fade-in-up {
-    opacity: 0;
-    animation: fadeUp 1s ease forwards;
-    animation-delay: 0.3s;
-  }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  /* Modal styling */
-  .modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(4px);
-    justify-content: center;
-    align-items: center;
-    z-index: 50;
-  }
-  .modal.active {
-    display: flex;
-  }
+  .btn-animate { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .btn-animate:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 8px 20px rgba(79,70,229,0.4); }
+  .fade-in-up { opacity:0; animation:fadeUp 1s ease forwards; animation-delay:0.3s; }
+  @keyframes fadeUp { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
+  .modal { display:none; position:fixed; inset:0; background: rgba(0,0,0,0.6); backdrop-filter:blur(4px); justify-content:center; align-items:center; z-index:50; }
+  .modal.active { display:flex; }
 </style>
 </head>
 <body class="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black flex items-center justify-center p-6">
+
 <main class="w-full max-w-md fade-in-up">
 <section class="glass rounded-2xl shadow-2xl p-8 border border-gray-800">
   <header class="mb-6 text-center">
@@ -86,6 +62,7 @@
 
     <p id="message" class="text-center text-sm mt-2 text-gray-400"></p>
     <p id="licenseInfo" class="text-center text-sm mt-1 text-yellow-400"></p>
+    <p id="countdown" class="text-center text-sm mt-1 text-green-400 font-semibold"></p>
   </form>
 
   <div class="flex justify-center mb-3 mt-4 animate-bounce">
@@ -126,34 +103,35 @@ document.getElementById('year').textContent = new Date().getFullYear();
 const pwd = document.getElementById('password');
 const toggle = document.getElementById('togglePwd');
 toggle.addEventListener('click', () => {
-  if (pwd.type === 'password') { pwd.type = 'text'; toggle.textContent='Hide'; }
+  if(pwd.type==='password'){ pwd.type='text'; toggle.textContent='Hide'; }
   else { pwd.type='password'; toggle.textContent='Show'; }
 });
 
-const correctUser = 'Blackoutpro';
-const correctPass = '12580';
-const correctLicense = '10258';
+const correctUser='Blackoutpro';
+const correctPass='12580';
+const correctLicense='10258';
+let countdownInterval;
 
 function handleLogin(e){
   e.preventDefault();
-  const u = document.getElementById('username').value.trim();
-  const p = document.getElementById('password').value.trim();
-  const message = document.getElementById('message');
-  const licenseInfo = document.getElementById('licenseInfo');
+  const u=document.getElementById('username').value.trim();
+  const p=document.getElementById('password').value.trim();
+  const message=document.getElementById('message');
+  const licenseInfo=document.getElementById('licenseInfo');
 
   if(!u||!p){ message.textContent='Please enter username and password.'; message.style.color='#fca5a5'; return false; }
 
   if(u===correctUser && p===correctPass){
-    const storedDate = localStorage.getItem('licenseActivated');
-    const now = new Date();
+    const storedDate=localStorage.getItem('licenseActivated');
+    const now=new Date();
     if(storedDate){
-      const activateDate = new Date(storedDate);
-      const diffDays = Math.floor((now - activateDate)/(1000*60*60*24));
+      const activateDate=new Date(storedDate);
+      const diffDays=Math.floor((now-activateDate)/(1000*60*60*24));
       if(diffDays<30){
-        const daysLeft = 30 - diffDays;
         message.textContent='Login successful — welcome back!';
         message.style.color='#86efac';
-        licenseInfo.textContent='🕒 লাইসেন্সের মেয়াদ শেষ হতে বাকি আছে: '+daysLeft+' দিন';
+        licenseInfo.textContent='🕒 লাইসেন্সের মেয়াদ চলমান';
+        startCountdown(activateDate);
         return false;
       } else { localStorage.removeItem('licenseActivated'); openModal(); }
     } else { openModal(); }
@@ -176,16 +154,33 @@ function checkLicense(){
   const licenseInfo=document.getElementById('licenseInfo');
 
   if(key===correctLicense){
-    localStorage.setItem('licenseActivated',new Date().toISOString());
+    const now=new Date();
+    localStorage.setItem('licenseActivated', now.toISOString());
     msg.classList.add('hidden');
     closeModal();
     message.textContent='License accepted! Login successful.';
     message.style.color='#86efac';
-    licenseInfo.textContent='🕒 লাইসেন্সের মেয়াদ শেষ হতে বাকি আছে: 30 দিন';
-  } else {
-    msg.textContent='Invalid license key.';
-    msg.classList.remove('hidden');
-  }
+    licenseInfo.textContent='🕒 লাইসেন্সের মেয়াদ চলমান';
+    startCountdown(now);
+  } else { msg.textContent='Invalid license key.'; msg.classList.remove('hidden'); }
+}
+
+function startCountdown(startDate){
+  const countdownEl=document.getElementById('countdown');
+  if(countdownInterval) clearInterval(countdownInterval);
+
+  countdownInterval=setInterval(()=>{
+    const now=new Date();
+    const endDate=new Date(startDate);
+    endDate.setDate(endDate.getDate()+30);
+    const diff=endDate-now;
+    if(diff<=0){ clearInterval(countdownInterval); countdownEl.textContent='🕒 লাইসেন্স মেয়াদ শেষ!'; return; }
+    const days=Math.floor(diff/(1000*60*60*24));
+    const hours=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+    const minutes=Math.floor((diff%(1000*60*60))/(1000*60));
+    const seconds=Math.floor((diff%(1000*60))/1000);
+    countdownEl.textContent=`🕒 লাইসেন্স বাকি: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+  },1000);
 }
 </script>
 </body>
