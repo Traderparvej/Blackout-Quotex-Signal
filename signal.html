@@ -16,16 +16,22 @@ input, select { background-color:#1f2937; color:white; border:1px solid #374151;
 .asset-container label:hover { background-color:#2563eb; color:white; }
 .asset-container input[type=checkbox] { accent-color:#6366f1; width:18px; height:18px; }
 .signal-output { background:#111827; border:1px solid #374151; border-radius:0.5rem; padding:1rem; min-height:220px; color:#60a5fa; white-space:pre-wrap; overflow-y:auto; font-family:monospace; font-weight:bold; }
+.license-bar { text-align:center; font-weight:bold; margin-bottom:0.5rem; }
+.license-active { color:#86efac; }
+.license-expired { color:#f87171; }
 </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-6">
 
-<section class="glass w-full max-w-3xl space-y-6">
+<section class="glass w-full max-w-3xl space-y-4">
 
 <header class="text-center">
 <h1 class="text-3xl font-extrabold mb-1">🖤 Blackout Signal</h1>
 <p class="text-gray-400">Software: Blackout Signal | Owner: @TraderParvej</p>
 </header>
+
+<!-- License bar always visible -->
+<div id="licenseBar" class="license-bar">🕒 লাইসেন্স চলমান 🕒</div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 <div>
@@ -80,12 +86,12 @@ input, select { background-color:#1f2937; color:white; border:1px solid #374151;
 <button class="btn-animate px-6 py-3 bg-indigo-600 rounded-lg hover:bg-indigo-500 font-semibold" onclick="copySignal()">Copy Output</button>
 </div>
 
-<div class="mt-6">
+<div class="mt-4">
 <label>Signal Output</label>
 <div id="signalOutput" class="signal-output">DATE: —</div>
 </div>
 
-<footer class="mt-6 text-xs text-gray-500 text-center">
+<footer class="mt-4 text-xs text-gray-500 text-center">
 © <span id="year"></span> Blackout Signal — Preview Mode
 </footer>
 
@@ -98,7 +104,6 @@ const assetOptions = {
 "OTC": ["AUD/USD-OTC", "NZD/USD-OTC", "EUR/USD-OTC", "EUR/CAD-OTC", "USD/BRL-OTC", "USD/PKR-OTC"],
 "Real": ["BTC/USDT", "ETH/USDT", "XRP/USDT", "BNB/USDT", "ADA/USDT"]
 };
-
 function updateAssets(){
   const market = document.getElementById('marketSelect').value;
   const container = document.getElementById('assetContainer');
@@ -114,22 +119,42 @@ function updateAssets(){
   });
 }
 updateAssets();
-
 function getSelectedAssets(){
   return Array.from(document.querySelectorAll('#assetContainer input[type=checkbox]:checked')).map(cb=>cb.value);
 }
 
-// Bold monospace mapping only for M1 + digits + asset
+// Bold monospace
 const boldDigits = {'0':'𝟶','1':'𝟷','2':'𝟸','3':'𝟹','4':'𝟺','5':'𝟻','6':'𝟼','7':'𝟽','8':'𝟾','9':'𝟿'};
 const boldLetters = {'A':'𝙰','B':'𝙱','C':'𝙲','D':'𝙳','E':'𝙴','F':'𝙵','G':'𝙶','H':'𝙷','I':'𝙸','J':'𝙹','K':'𝙺','L':'𝙻','M':'𝙼','N':'𝙽','O':'𝙾','P':'𝙿','Q':'𝟀','R':'𝚁','S':'𝚂','T':'𝚃','U':'𝚄','V':'𝚅','W':'𝚆','X':'𝚇','Y':'𝚈','Z':'𝚉','/':'/','-':'-'};
+function unicodeTime(hh, mm){ return `${hh.split('').map(d=>boldDigits[d]).join('')}:${mm.split('').map(d=>boldDigits[d]).join('')}`; }
+function unicodeAsset(asset){ return asset.toUpperCase().split('').map(c=>boldLetters[c]||c).join(''); }
 
-function unicodeTime(hh, mm){
-  return `${hh.split('').map(d=>boldDigits[d]).join('')}:${mm.split('').map(d=>boldDigits[d]).join('')}`;
+// License countdown using same date as login
+const licenseDurationDays = 30;
+function updateLicenseBar(){
+  const bar = document.getElementById('licenseBar');
+  const stored = localStorage.getItem('licenseActivated');
+  if(stored){
+    const activateDate = new Date(stored);
+    const now = new Date();
+    const diff = (now-activateDate)/(1000*60*60*24);
+    if(diff<licenseDurationDays){
+        const expireDate = new Date(activateDate);
+        expireDate.setDate(expireDate.getDate()+licenseDurationDays);
+        bar.innerHTML = `🕒 লাইসেন্স চলমান 🕒 <br> Expires: ${expireDate.toLocaleDateString()} ${expireDate.toLocaleTimeString()}`;
+        bar.className='license-bar license-active';
+    } else {
+        bar.innerHTML = `🕒 লাইসেন্স শেষ হয়েছে 🕒`;
+        bar.className='license-bar license-expired';
+        localStorage.removeItem('licenseActivated');
+    }
+  } else {
+    bar.innerHTML = `🕒 লাইসেন্স নেই 🕒`;
+    bar.className='license-bar license-expired';
+  }
 }
-
-function unicodeAsset(asset){
-  return asset.toUpperCase().split('').map(c=>boldLetters[c]||c).join('');
-}
+updateLicenseBar();
+setInterval(updateLicenseBar,1000*60); // update every 1 min
 
 function generateSignals(){
   const selectedAssets = getSelectedAssets();
@@ -155,13 +180,9 @@ function generateSignals(){
   document.getElementById('signalOutput').textContent = output;
 }
 
-function resetSignal(){
-  document.getElementById('signalOutput').textContent='DATE: —';
-}
+function resetSignal(){ document.getElementById('signalOutput').textContent='DATE: —'; }
+function copySignal(){ navigator.clipboard.writeText(document.getElementById('signalOutput').textContent).then(()=>alert('Signal copied!')); }
 
-function copySignal(){
-  navigator.clipboard.writeText(document.getElementById('signalOutput').textContent).then(()=>alert('Signal copied!'));
-}
 </script>
 </body>
 </html>
