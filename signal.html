@@ -24,15 +24,6 @@ body {
   transform: translateY(-2px) scale(1.02);
   box-shadow:0 8px 20px rgba(79,70,229,0.4);
 }
-.fade-in-up {
-  opacity:0;
-  animation:fadeUp 1s ease forwards;
-  animation-delay:0.3s;
-}
-@keyframes fadeUp {
-  from{opacity:0; transform:translateY(20px);} 
-  to{opacity:1; transform:translateY(0);}
-}
 input, select {
   background-color:#1f2937;
   color:white;
@@ -47,7 +38,7 @@ label { font-size:0.875rem; color:#d1d5db; }
   border:1px solid #374151;
   border-radius:0.5rem;
   padding:1rem;
-  min-height:100px;
+  min-height:150px;
   color:#60a5fa;
   font-family:monospace;
   white-space:pre-wrap;
@@ -56,7 +47,7 @@ label { font-size:0.875rem; color:#d1d5db; }
 </head>
 <body class="min-h-screen flex items-center justify-center p-6">
 
-<section class="glass w-full max-w-3xl fade-in-up space-y-6">
+<section class="glass w-full max-w-3xl space-y-6">
 
   <!-- Header -->
   <header class="text-center">
@@ -66,7 +57,6 @@ label { font-size:0.875rem; color:#d1d5db; }
 
   <!-- Settings Panel -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
     <div>
       <label>UTC Offset</label>
       <select id="utcOffset">
@@ -103,15 +93,15 @@ label { font-size:0.875rem; color:#d1d5db; }
 
     <div>
       <label>Signal Count</label>
-      <input type="number" id="signalCount" value="0" min="0"/>
+      <input type="number" id="signalCount" value="1" min="1"/>
     </div>
 
     <div>
       <label>Asset</label>
       <select id="assetSelect">
         <option>AUD/USD (OTC)</option>
+        <option>NZD/USD (OTC)</option>
         <option>BTC/USDT</option>
-        <option>ETH/USDT</option>
       </select>
     </div>
   </div>
@@ -126,7 +116,7 @@ label { font-size:0.875rem; color:#d1d5db; }
   <!-- Signal Output -->
   <div class="mt-6">
     <label>Signal Output</label>
-    <div id="signalOutput" class="signal-output">▶️ DATE: — ◀️</div>
+    <div id="signalOutput" class="signal-output">DATE: —</div>
   </div>
 
   <!-- Footer -->
@@ -141,23 +131,29 @@ document.getElementById('year').textContent = new Date().getFullYear();
 
 function generateSignal(){
   const countInput = document.getElementById('signalCount');
-  let count = parseInt(countInput.value) || 0;
-  count++; // Increment for demo, user can manually adjust
-  countInput.value = count;
+  let count = parseInt(countInput.value) || 1;
 
-  const output = document.getElementById('signalOutput');
-  const date = new Date().toLocaleString();
+  const date = document.getElementById('startDate').value || new Date().toLocaleDateString();
   const market = document.getElementById('marketSelect').value;
   const timeframe = document.getElementById('timeframeSelect').value;
   const asset = document.getElementById('assetSelect').value;
   const utc = document.getElementById('utcOffset').value;
 
-  output.textContent = `▶️ DATE: ${date} | UTC: ${utc}\nMarket: ${market}\nTimeframe: ${timeframe}\nAsset: ${asset}\nSignal Count: ${count} ◀️`;
+  let output = `DATE: ${date}\n\n⏰ UTC ${utc} ;  MTG :- 1 STEP\n\n       (◉‿◉) Blackout (◉‿◉)\n\n⌛️ ${timeframe} :- \n\n`;
+
+  for(let i=1; i<=count; i++){
+    const timeStr = new Date().toLocaleTimeString();
+    output += `𝙼${i} ${timeStr}  ${asset}\n`;
+  }
+
+  output += `\nSoftware: Blackout\nOwner: @TraderParvej`;
+
+  document.getElementById('signalOutput').textContent = output;
 }
 
 function resetSignal(){
-  document.getElementById('signalCount').value = 0;
-  document.getElementById('signalOutput').textContent = '▶️ DATE: — ◀️';
+  document.getElementById('signalCount').value = 1;
+  document.getElementById('signalOutput').textContent = 'DATE: —';
 }
 
 function copySignal(){
