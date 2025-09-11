@@ -108,7 +108,7 @@ label { font-size:0.875rem; color:#d1d5db; }
 
   <!-- Action Buttons -->
   <div class="flex gap-4 justify-center mt-4">
-    <button class="btn-animate px-6 py-3 bg-green-600 rounded-lg hover:bg-green-500 font-semibold" onclick="startSignal()">Generate</button>
+    <button class="btn-animate px-6 py-3 bg-green-600 rounded-lg hover:bg-green-500 font-semibold" onclick="generateSignals()">Generate</button>
     <button class="btn-animate px-6 py-3 bg-gray-600 rounded-lg hover:bg-gray-500 font-semibold" onclick="resetSignal()">Reset</button>
     <button class="btn-animate px-6 py-3 bg-indigo-600 rounded-lg hover:bg-indigo-500 font-semibold" onclick="copySignal()">Copy Output</button>
   </div>
@@ -129,38 +129,30 @@ label { font-size:0.875rem; color:#d1d5db; }
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
 
-let signalTimeout;
-
-function startSignal(){
-  resetSignal();
-  const totalSignals = parseInt(document.getElementById('signalCount').value) || 1;
-  generateNextSignal(1, totalSignals);
-}
-
-function generateNextSignal(current, total){
-  if(current > total) return;
-  const output = document.getElementById('signalOutput');
+function generateSignals(){
+  const count = parseInt(document.getElementById('signalCount').value) || 1;
   const date = document.getElementById('startDate').value || new Date().toLocaleDateString();
   const market = document.getElementById('marketSelect').value;
   const timeframe = document.getElementById('timeframeSelect').value;
   const asset = document.getElementById('assetSelect').value;
   const utc = document.getElementById('utcOffset').value;
-  const timeStr = new Date().toLocaleTimeString();
 
-  let newSignal = `DATE: ${date}\n\n⏰ UTC ${utc} ;  MTG :- ${current} STEP\n\n       (◉‿◉) Blackout (◉‿◉)\n\n⌛️ ${timeframe} :- \n\n𝙼${current} ${timeStr}  ${asset}\n\nSoftware: Blackout\nOwner: @TraderParvej`;
+  let output = '';
+  let currentTime = new Date();
 
-  output.textContent = newSignal;
+  for(let i=1; i<=count; i++){
+    // Random gap 3–8 minutes
+    const randomGap = Math.floor(Math.random() * (8-3+1)+3);
+    currentTime = new Date(currentTime.getTime() + randomGap*60*1000);
+    const timeStr = currentTime.toLocaleTimeString();
 
-  // Random interval between 3–8 minutes
-  const min = 3 * 60 * 1000;
-  const max = 8 * 60 * 1000;
-  const randomInterval = Math.floor(Math.random() * (max - min + 1)) + min;
+    output += `DATE: ${date}\n\n⏰ UTC ${utc} ;  MTG :- ${i} STEP\n\n       (◉‿◉) Blackout (◉‿◉)\n\n⌛️ ${timeframe} :- \n\n𝙼${i} ${timeStr}  ${asset}\n\nSoftware: Blackout\nOwner: @TraderParvej\n\n------------------------\n\n`;
+  }
 
-  signalTimeout = setTimeout(()=>{ generateNextSignal(current+1, total); }, randomInterval);
+  document.getElementById('signalOutput').textContent = output.trim();
 }
 
 function resetSignal(){
-  clearTimeout(signalTimeout);
   document.getElementById('signalOutput').textContent = 'DATE: —';
 }
 
