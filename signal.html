@@ -133,11 +133,11 @@ const boldLetters = {'A':'𝙰','B':'𝙱','C':'𝙲','D':'𝙳','E':'𝙴','F':
 function unicodeTime(hh, mm){ return `${hh.split('').map(d=>boldDigits[d]).join('')}:${mm.split('').map(d=>boldDigits[d]).join('')}`; }
 function unicodeAsset(asset){ return asset.toUpperCase().split('').map(c=>boldLetters[c]||c).join(''); }
 
-// License countdown
+// License countdown synced with login page
 const licenseDurationDays = 30;
 function updateLicenseBar(){
   const bar = document.getElementById('licenseBar');
-  const stored = localStorage.getItem('licenseActivated');
+  const stored = localStorage.getItem('licenseActivated'); // login page থেকে sync
   if(stored){
     const activateDate = new Date(stored);
     const now = new Date();
@@ -145,10 +145,7 @@ function updateLicenseBar(){
     if(diff<licenseDurationDays){
         const expireDate = new Date(activateDate);
         expireDate.setDate(expireDate.getDate()+licenseDurationDays);
-        const hh = expireDate.getHours().toString().padStart(2,'0');
-        const mm = expireDate.getMinutes().toString().padStart(2,'0');
-        const ss = expireDate.getSeconds().toString().padStart(2,'0');
-        bar.innerHTML = `🕒 লাইসেন্স চলমান 🕒 <br>Expires: ${expireDate.toLocaleDateString()} ${hh}:${mm}:${ss}`;
+        bar.innerHTML = `🕒 লাইসেন্স চলমান 🕒 <br>Expires: ${expireDate.toLocaleDateString()} ${expireDate.getHours().toString().padStart(2,'0')}:${expireDate.getMinutes().toString().padStart(2,'0')}:${expireDate.getSeconds().toString().padStart(2,'0')}`;
         bar.className='license-bar license-active';
     } else {
         bar.innerHTML = `🕒 লাইসেন্স শেষ হয়েছে 🕒`;
@@ -161,7 +158,7 @@ function updateLicenseBar(){
   }
 }
 updateLicenseBar();
-setInterval(updateLicenseBar,1000); // update every 1 sec
+setInterval(updateLicenseBar,1000); // sync every 1 sec
 
 function generateSignals(){
   const selectedAssets = getSelectedAssets();
@@ -180,7 +177,7 @@ function generateSignals(){
     const hh = currentTime.getHours().toString().padStart(2,'0');
     const mm = currentTime.getMinutes().toString().padStart(2,'0');
     output += `𝙼𝟷 ${unicodeTime(hh, mm)} ${unicodeAsset(asset)}\n`;
-    currentTime.setMinutes(currentTime.getMinutes()+Math.floor(Math.random()*4)+3); // random 3-6 min
+    currentTime.setMinutes(currentTime.getMinutes()+Math.floor(Math.random()*4)+3); // 3-6 min random
   }
 
   output += `\nSoftware:Blackout\nOwner: @TraderParvej`;
