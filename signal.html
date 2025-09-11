@@ -6,7 +6,6 @@
 <title>🖤 Blackout Signal Generator</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-/* Global Styles */
 body { 
   background: linear-gradient(to bottom,#111827,#1f2937); 
   color:white; 
@@ -18,8 +17,6 @@ body {
   align-items:center; 
   justify-content:center; 
 }
-
-/* Glass Panel */
 .glass { 
   background: rgba(255,255,255,0.05); 
   backdrop-filter: blur(12px); 
@@ -29,82 +26,19 @@ body {
   width:100%; 
   max-width:3xl; 
 }
-
-/* Buttons */
-.btn-animate { 
-  transition: all 0.3s ease; 
-}
-.btn-animate:hover { 
-  transform: translateY(-3px) scale(1.03); 
-  box-shadow:0 10px 25px rgba(79,70,229,0.5); 
-}
-
-/* Inputs and Selects */
-input, select { 
-  background-color:#1f2937; 
-  color:white; 
-  border:1px solid #374151; 
-  border-radius:0.5rem; 
-  padding:0.6rem; 
-  width:100%; 
-  font-size:0.95rem;
-}
-
-/* Asset List */
-.asset-container { 
-  max-height:160px; 
-  overflow-y:auto; 
-  border:1px solid #374151; 
-  border-radius:0.75rem; 
-  padding:0.5rem; 
-  background:#1f2937; 
-}
-.asset-container label { 
-  display:flex; 
-  align-items:center; 
-  gap:0.5rem; 
-  padding:0.45rem 0.75rem; 
-  border-radius:0.5rem; 
-  cursor:pointer; 
-  transition: all 0.2s; 
-}
-.asset-container label:hover { 
-  background-color:#2563eb; 
-  color:white; 
-}
-.asset-container input[type=checkbox] { 
-  accent-color:#6366f1; 
-  width:18px; 
-  height:18px; 
-}
-
-/* Signal Output */
-.signal-output { 
-  background:#111827; 
-  border:1px solid #374151; 
-  border-radius:0.5rem; 
-  padding:1rem; 
-  min-height:220px; 
-  color:#60a5fa; 
-  white-space:pre-wrap; 
-  overflow-y:auto; 
-  font-family:monospace; 
-  font-weight:bold; 
-}
-
-/* License Countdown (under header) */
-#licenseCountdown { 
-  display:block; 
-  margin-top:0.5rem; 
-  font-size:0.95rem; 
-  font-weight:bold; 
-  color:#34d399; 
-  font-family:sans-serif; 
-}
-
-/* Header Text */
+.btn-animate { transition: all 0.3s ease; }
+.btn-animate:hover { transform: translateY(-3px) scale(1.03); box-shadow:0 10px 25px rgba(79,70,229,0.5); }
+input, select { background-color:#1f2937; color:white; border:1px solid #374151; border-radius:0.5rem; padding:0.6rem; width:100%; font-size:0.95rem; }
+.asset-container { max-height:160px; overflow-y:auto; border:1px solid #374151; border-radius:0.75rem; padding:0.5rem; background:#1f2937; }
+.asset-container label { display:flex; align-items:center; gap:0.5rem; padding:0.45rem 0.75rem; border-radius:0.5rem; cursor:pointer; transition: all 0.2s; }
+.asset-container label:hover { background-color:#2563eb; color:white; }
+.asset-container input[type=checkbox] { accent-color:#6366f1; width:18px; height:18px; }
+.signal-output { background:#111827; border:1px solid #374151; border-radius:0.5rem; padding:1rem; min-height:220px; color:#60a5fa; white-space:pre-wrap; overflow-y:auto; font-family:monospace; font-weight:bold; }
+#licenseCountdown { display:block; margin-top:0.5rem; font-size:0.95rem; font-weight:bold; color:#34d399; font-family:sans-serif; }
 header h1 { font-size:2.5rem; font-weight:900; }
 header p { font-size:0.875rem; color:#9ca3af; margin-top:0.25rem; }
+a { color:#6366f1; text-decoration:none; }
+a:hover { text-decoration:underline; }
 </style>
 </head>
 <body>
@@ -115,7 +49,7 @@ header p { font-size:0.875rem; color:#9ca3af; margin-top:0.25rem; }
 <h1>🖤 Blackout Signal</h1>
 <!-- License countdown displayed under header -->
 <span id="licenseCountdown">🕒 License Active</span>
-<p>Software: Blackout Signal | Owner: @TraderParvej</p>
+<p>Software: Blackout Signal | Owner: <a href="https://t.me/YOUR_TELEGRAM_USERNAME" target="_blank">@TraderParvej</a></p>
 </header>
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -177,7 +111,7 @@ header p { font-size:0.875rem; color:#9ca3af; margin-top:0.25rem; }
 </div>
 
 <footer class="mt-6 text-xs text-gray-500 text-center">
-© <span id="year"></span> Blackout Signal — Preview Mode
+© <span id="year"></span> <a href="https://t.me/YOUR_TELEGRAM_GROUP_LINK" target="_blank">Join Telegram Group</a>
 </footer>
 
 </section>
