@@ -139,19 +139,8 @@ a:hover { text-decoration:underline; }
 <script>
 /* Assets */
 const assetOptions = {
-"OTC": [
-"USD/ARS (OTC)","USD/PKR (OTC)","USD/BRL (OTC)","USD/JPY (OTC)","CAD/CHF (OTC)","EUR/AUD (OTC)","EUR/CHF (OTC)",
-"EUR/SGD (OTC)","GBP/AUD (OTC)","GBP/CHF (OTC)","GBP/JPY (OTC)","USD/PHP (OTC)","USD/CHF (OTC)","AUD/JPY (OTC)",
-"CAD/JPY (OTC)","NZD/CAD (OTC)","NZD/USD (OTC)","USD/BDT (OTC)","NZD/JPY (OTC)","USD/CAD (OTC)","USD/ZAR (OTC)",
-"AUD/CAD (OTC)","AUD/NZD (OTC)","EUR/CAD (OTC)","EUR/JPY (OTC)","AUD/USD (OTC)","USD/EGP (OTC)","USD/IDR (OTC)",
-"EUR/GBP (OTC)","NZD/CHF (OTC)","USD/COP (OTC)","USD/MXN (OTC)","USD/NGN (OTC)","GBP/NZD (OTC)","CHF/JPY (OTC)",
-"AUD/CHF (OTC)","USD/TRY (OTC)","EUR/USD (OTC)","USD/DZD (OTC)","USD/INR (OTC)","EUR/NZD (OTC)","GBP/CAD (OTC)",
-"GBP/USD (OTC)"
-],
-"Real": [
-"EUR/USD","GBP/USD","USD/JPY","USD/CHF","USD/CAD","AUD/USD","NZD/USD",
-"EUR/GBP","EUR/JPY","GBP/JPY","AUD/JPY","EUR/AUD","GBP/AUD"
-]
+"OTC": ["USD/ARS (OTC)","USD/PKR (OTC)","USD/BRL (OTC)","USD/JPY (OTC)","CAD/CHF (OTC)","EUR/AUD (OTC)","EUR/CHF (OTC)","EUR/SGD (OTC)","GBP/AUD (OTC)","GBP/CHF (OTC)","GBP/JPY (OTC)","USD/PHP (OTC)","USD/CHF (OTC)","AUD/JPY (OTC)","CAD/JPY (OTC)","NZD/CAD (OTC)","NZD/USD (OTC)","USD/BDT (OTC)","NZD/JPY (OTC)","USD/CAD (OTC)","USD/ZAR (OTC)","AUD/CAD (OTC)","AUD/NZD (OTC)","EUR/CAD (OTC)","EUR/JPY (OTC)","AUD/USD (OTC)","USD/EGP (OTC)","USD/IDR (OTC)","EUR/GBP (OTC)","NZD/CHF (OTC)","USD/COP (OTC)","USD/MXN (OTC)","USD/NGN (OTC)","GBP/NZD (OTC)","CHF/JPY (OTC)","AUD/CHF (OTC)","USD/TRY (OTC)","EUR/USD (OTC)","USD/DZD (OTC)","USD/INR (OTC)","EUR/NZD (OTC)","GBP/CAD (OTC)","GBP/USD (OTC)"],
+"Real": ["EUR/USD","GBP/USD","USD/JPY","USD/CHF","USD/CAD","AUD/USD","NZD/USD","EUR/GBP","EUR/JPY","GBP/JPY","AUD/JPY","EUR/AUD","GBP/AUD"]
 };
 
 function updateAssets(){
@@ -186,7 +175,7 @@ function shuffleArray(arr){
             .map(({v})=>v);
 }
 
-/* Generate Signals with popup */
+/* Generate Signals with rotation (no back-to-back duplicate) */
 async function generateSignals(){
   const selectedAssets = getSelectedAssets();
   if(selectedAssets.length===0){ alert("Please select at least one asset."); return; }
@@ -200,9 +189,6 @@ async function generateSignals(){
   await new Promise(r => setTimeout(r,1500));
 
   let count = parseInt(document.getElementById('signalCount').value)||1;
-  if(count > selectedAssets.length){ 
-    count = selectedAssets.length; // repeat na korte diye limit kora
-  }
 
   const date = document.getElementById('startDate').value||new Date().toLocaleDateString('en-GB');
   const timeframe = document.getElementById('timeframeSelect').value;
@@ -213,16 +199,27 @@ async function generateSignals(){
   let currentTime = new Date();
   currentTime.setMinutes(currentTime.getMinutes()+5);
 
-  // shuffle assets and pick required count
-  const shuffledAssets = shuffleArray(selectedAssets).slice(0,count);
+  let pool = shuffleArray(selectedAssets); // shuffled asset list
+  let lastAsset = null;
 
   for(let i=0;i<count;i++){
-    const asset = shuffledAssets[i];
+    if(pool.length===0){ pool = shuffleArray(selectedAssets); }
+
+    let asset = pool.shift();
+
+    // prevent immediate duplicate
+    if(asset === lastAsset && pool.length>0){
+      pool.push(asset); 
+      asset = pool.shift();
+    }
+
     const hh = currentTime.getHours().toString().padStart(2,'0');
     const mm = currentTime.getMinutes().toString().padStart(2,'0');
     output += `𝙼𝟷 ${unicodeTime(hh, mm)} ${unicodeAsset(asset)}\n`;
 
+    lastAsset = asset;
     currentTime.setMinutes(currentTime.getMinutes()+Math.floor(Math.random()*4)+2);
+
     document.getElementById('signalOutput').textContent=output;
     await new Promise(r => setTimeout(r,(Math.floor(Math.random()*4)+3)*1000));
   }
