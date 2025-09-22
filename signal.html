@@ -179,6 +179,13 @@ const boldLetters = {'A':'𝙰','B':'𝙱','C':'𝙲','D':'𝙳','E':'𝙴','F':
 function unicodeTime(hh, mm){ return `${hh.split('').map(d=>boldDigits[d]).join('')}:${mm.split('').map(d=>boldDigits[d]).join('')}`; }
 function unicodeAsset(asset){ return asset.toUpperCase().split('').map(c=>boldLetters[c]||c).join(''); }
 
+/* Shuffle helper */
+function shuffleArray(arr){
+  return arr.map(v=>({v, sort:Math.random()}))
+            .sort((a,b)=>a.sort-b.sort)
+            .map(({v})=>v);
+}
+
 /* Generate Signals with popup */
 async function generateSignals(){
   const selectedAssets = getSelectedAssets();
@@ -192,7 +199,11 @@ async function generateSignals(){
   document.getElementById('signalOutput').textContent='Preparing signals…';
   await new Promise(r => setTimeout(r,1500));
 
-  const count = parseInt(document.getElementById('signalCount').value)||1;
+  let count = parseInt(document.getElementById('signalCount').value)||1;
+  if(count > selectedAssets.length){ 
+    count = selectedAssets.length; // repeat na korte diye limit kora
+  }
+
   const date = document.getElementById('startDate').value||new Date().toLocaleDateString('en-GB');
   const timeframe = document.getElementById('timeframeSelect').value;
   const utc = document.getElementById('utcOffset').value;
@@ -202,8 +213,11 @@ async function generateSignals(){
   let currentTime = new Date();
   currentTime.setMinutes(currentTime.getMinutes()+5);
 
-  for(let i=1;i<=count;i++){
-    const asset = selectedAssets[Math.floor(Math.random()*selectedAssets.length)];
+  // shuffle assets and pick required count
+  const shuffledAssets = shuffleArray(selectedAssets).slice(0,count);
+
+  for(let i=0;i<count;i++){
+    const asset = shuffledAssets[i];
     const hh = currentTime.getHours().toString().padStart(2,'0');
     const mm = currentTime.getMinutes().toString().padStart(2,'0');
     output += `𝙼𝟷 ${unicodeTime(hh, mm)} ${unicodeAsset(asset)}\n`;
